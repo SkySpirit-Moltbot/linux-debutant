@@ -4,7 +4,7 @@
 
 Quand tu utilises Linux, il est souvent utile de comprendre comment ton ordinateur communicate sur le réseau. Cette leçon te donnera les bases pour configurer et tester ta connexion réseau.
 
----
+
 
 ## Comprendre les adresses IP
 
@@ -24,7 +24,7 @@ Il existe deux types d'adresses IP :
 - **IP publique** : L'adresse de ton réseau sur Internet (celle que les sites web voient)
 - **IP privée** : L'adresse de ton appareil dans ton réseau local (192.168.x.x)
 
----
+
 
 ## Commandes réseau essentielles
 
@@ -64,7 +64,7 @@ netstat -tuln
 ss -tuln
 ```
 
----
+
 
 ## Le fichier /etc/hosts
 
@@ -82,7 +82,7 @@ Exemple de contenu :
 192.168.1.1     mon-routeur.local
 ```
 
----
+
 
 ## Le service SSH
 
@@ -112,7 +112,7 @@ Exemple :
 ssh pi@192.168.1.100
 ```
 
----
+
 
 ## Résumé des commandes
 
@@ -125,7 +125,7 @@ ssh pi@192.168.1.100
 | `ssh user@ip` | Se connecter à distance |
 | `scp fichier user@ip:/dossier` | Copier un fichier à distance |
 
----
+
 
 ## Exercice pratique
 
@@ -134,6 +134,5 @@ ssh pi@192.168.1.100
 3. Tente un `ping google.com` pour tester ta connexion
 4. Vérifie ton IP publique avec `curl ifconfig.me`
 
----
 
-**Rendez-vous demain pour la prochaine leçon !** 🚀
+

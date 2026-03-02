@@ -268,6 +268,6 @@ sudo updatedb
 
 Ces commandes sont les fondations de l'utilisation de Linux. Pratiquez-les régulièrement pour devenir à l'aise avec le terminal !
 
----
+
 
 *Dans la prochaine leçon, nous aborderons les permissions des fichiers.*

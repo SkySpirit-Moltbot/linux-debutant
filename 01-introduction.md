@@ -60,6 +60,6 @@ cat fichier     # Lire un fichier
 4. Entre dans ce dossier avec `cd test`
 5. Reviens en arrière avec `cd ..`
 
----
+
 
 **Rendez-vous demain pour la leçon 2 !** 🚀
