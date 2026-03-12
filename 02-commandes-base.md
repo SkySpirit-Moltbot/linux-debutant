@@ -1,273 +1,411 @@
-# Leçon 2 : Les commandes de base
+# Leçon 2 : Commandes de base
 
-Dans cette leçon, nous allons découvrir les commandes essentielles pour naviguer et manipuler le système de fichiers sous Linux.
+Dans cette leçon, tu vas maîtriser les commandes essentielles de Linux pour naviguer, manipuler des fichiers et interagir avec le terminal. Ce sont les fondations de tout administrateur Linux.
 
-## 2.1 Navigation de base
+---
 
-### pwd - Where am I ?
+## 1. Navigation dans le système de fichiers
 
-La commande `pwd` (print working directory) affiche le répertoire courant. C'est très utile pour savoir où l'on se trouve dans l'arborescence.
+### pwd - print working directory
+
+Affiche le répertoire courant (où tu es).
 
 ```bash
-pwd
-# Exemple de résultat : /home/david
+pwd                     # Résultat: /home/david
+pwd -P                  # Chemin physique (suivre les liens)
+pwd -L                  # Chemin logique (tel que tapé)
 ```
 
-### ls - Liste des fichiers
+### cd - change directory
 
-La commande `ls` liste le contenu d'un répertoire.
-
-```bash
-# Lister le contenu courant
-ls
-
-# Liste détaillée (permissions, taille, date)
-ls -l
-
-# Liste incluant les fichiers cachés
-ls -la
-
-# Liste avec les couleurs
-ls --color=auto
-```
-
-**Options utiles :**
-- `-l` : format long (détaillé)
-- `-a` : afficher les fichiers cachés (commençant par .)
-- `-h` : tailles lisibles (Ko, Mo, Go)
-- `-r` : ordre inverse
-- `-t` : trier par date de modification
-
-### cd - Changer de répertoire
-
-La commande `cd` (change directory) permet de se déplacer dans l'arborescence.
+Se déplacer dans l'arborescence.
 
 ```bash
-# Aller dans un répertoire
-cd /home/david/Documents
-
-# Revenir au répertoire personnel
-cd ~
-
-# Revenir au répertoire précédent
-cd -
-
-# Remonter d'un niveau
-cd ..
-
-# Rester dans le répertoire courant (rarement utilisé seul)
-cd .
+cd /home/david/Documents    # Chemin absolu
+cd Documents               # Chemin relatif
+cd ~                       # Home de l'utilisateur
+cd                         # Retour au home
+cd -                       # Répertoire précédent
+cd ..                      # Monter d'un niveau
+cd ../..                   # Monter de 2 niveaux
+cd /                       # Racine du système
 ```
 
 **Raccourcis utiles :**
-- `~` représente votre répertoire personnel (/home/votreutilisateur)
-- `..` représente le répertoire parent
-- `.` représente le répertoire courant
+- `~` ou `$HOME` : Répertoire personnel
+- `..` : Répertoire parent
+- `.` : Répertoire courant
+- `-` : Répertoire précédent
 
-## 2.2 Manipuler les fichiers et dossiers
+---
 
-### mkdir - Créer un répertoire
+## 2. Lister les fichiers
 
-```bash
-# Créer un répertoire
-mkdir mon_dossier
-
-# Créer plusieurs niveaux
-mkdir -p dossier1/dossier2/sous-dossier
-
-# Créer avec permissions spécifiques
-mkdir -m 755 mon_dossier
-```
-
-### touch - Créer un fichier vide
+### ls - list
 
 ```bash
-# Créer un fichier vide
-touch mon_fichier.txt
-
-# Créer plusieurs fichiers
-touch fichier1.txt fichier2.txt
+ls                      # Liste basique
+ls -l                   # Format long (détails)
+ls -a                   # Inclure fichiers cachés
+ls -A                   # Cachés sauf . et ..
+ls -la                  # Tout ensemble
+ls -lh                  # Tailles humaines (Ko, Mo, Go)
+ls -lS                  # Trier par taille
+ls -lt                  # Trier par date
+ls -ltr                 # Trier par date inversé
+ls -1                   # Un fichier par ligne
+ls -d */                # Lister seulement les dossiers
+ls -F                   # Indicateurs de type
+ls -R                   # Récursif (sous-dossiers)
 ```
 
-### cp - Copier des fichiers
+### Comprendre ls -l
+
+```
+-rw-r--r-- 1 david david 1234 Mar 10 10:00 fichier.txt
+^            ^    ^     ^   ^        ^
+|            |    |     |   |        +-- Nom
+|            |    |     |   +-- Date modification
+|            |    |     | +-- Taille (octets)
+|            |    |     +-- Groupe
+|            |    +-- Propriétaire
+|            +-- Permissions (rwx)
++-- Type de fichier (- = fichier, d = dossier, l = lien)
+```
+
+### Commandes complémentaires
 
 ```bash
-# Copier un fichier
-cp source.txt destination.txt
+# Lister par extension
+ls *.txt
 
-# Copier dans un répertoire
-cp fichier.txt /home/david/Documents/
+# Lister par motif
+ls fichier*
 
-# Copier récursivement (répertoires)
-cp -r dossier_source dossier_destination
+# Lister avec couleur (si activé)
+ls --color=auto
 
-# Conserver les attributs
-cp -p fichier.txt copie.txt
+# Lister inode (numéro unique)
+ls -li
 ```
 
-### mv - Déplacer ou renommer
+---
+
+## 3. Créer des fichiers et dossiers
+
+### mkdir - make directory
 
 ```bash
-# Déplacer un fichier
-mv fichier.txt /home/david/Documents/
-
-# Renommer un fichier
-mv ancien_nom.txt nouveau_nom.txt
-
-# Déplacer et renommer
-mv fichier.txt /home/david/Documents/nouveau.txt
+mkdir dossier                 # Créer un dossier
+mkdir -p a/b/c/d              # Créer récursif
+mkdir -p projet/{src,bin,doc} # Plusieurs dossiers
+mkdir -m 755 dossier          # Avec permissions
 ```
 
-### rm - Supprimer
+### touch - créer un fichier vide
 
 ```bash
-# Supprimer un fichier
-rm mon_fichier.txt
-
-# Supprimer un répertoire et son contenu
-rm -r mon_dossier
-
-# Supprimer sans confirmation
-rm -f fichier.txt
-
-# Supprimer uniquement les fichiers (pas les répertoires)
-rm -rf *
+touch fichier.txt             # Créer fichier vide
+touch file1.txt file2.txt     # Plusieurs fichiers
+touch -d "2024-01-01" file    # Avec date
+touch -a file                # Modifier date accès
+touch -m file                # Modifier date modification
 ```
 
-**Attention :** La suppression sous Linux est définitive ! Pas de corbeille par défaut.
-
-## 2.3 Lire le contenu des fichiers
-
-### cat - Afficher un fichier
+### echo et printf - créer avec contenu
 
 ```bash
-# Afficher le contenu complet
-cat mon_fichier.txt
-
-# Afficher avec numéros de lignes
-cat -n fichier.txt
+echo "Bonjour" > fichier.txt         # Créer et écrire
+echo "Ligne 1" >> fichier.txt         # Ajouter
+printf "Bonjour %s\n" "Monde"        # Formaté
 ```
 
-### less - Afficher page par page
+---
+
+## 4. Copier des fichiers
+
+### cp - copy
 
 ```bash
-# Afficher un fichier volumineux
-less gros_fichier.log
-
-# Commandes dans less :
-# - Espace : page suivante
-# - b : page précédente
-# - q : quitter
-# - /motif : rechercher
-# - n : prochain résultat
+cp source.txt destination.txt           # Copier fichier
+cp fichier.txt dossier/                  # Vers dossier
+cp -r dossier/ copie_dossier/           # Copier dossier
+cp -i fichier.txt dest.txt              # Confirmation
+cp -n fichier.txt dest.txt              # Pas écraser
+cp -p fichier.txt dest.txt              # Préserver attributs
+cp -a dossier/ copie/                   # Archive (tout préserver)
+cp -v fichier.txt dest.txt              # Verbeux
+cp -u fichier.txt dest.txt              # Copier si plus récent
+cp fichier{,.bak}                       # Raccourci: + .bak
 ```
 
-### head et tail - Début et fin d'un fichier
+### Options détaillées
+
+| Option | Description |
+|--------|-------------|
+| `-i` | Demander confirmation |
+| `-n` | Ne pas écraser |
+| `-v` | Afficher ce qui est fait |
+| `-p` | Préserver permissions, propriétaire, timestamp |
+| `-r` | Copier récursivement |
+| `-a` | Archive = -dR --preserve=all |
+| `-u` | Mettre à jour si plus récent |
+
+---
+
+## 5. Déplacer et renommer
+
+### mv - move
 
 ```bash
-# Afficher les 10 premières lignes
-head fichier.txt
-
-# Afficher les 20 premières lignes
-head -n 20 fichier.txt
-
-# Afficher les 10 dernières lignes
-tail fichier.txt
-
-# Suivre un fichier en temps réel (logs)
-tail -f /var/log/syslog
+mv source.txt destination.txt       # Renommer
+mv fichier.txt dossier/              # Déplacer vers dossier
+mv fichier1.txt fichier2.txt dossier/  # Plusieurs fichiers
+mv -i fichier.txt dest.txt          # Confirmation
+mv -n fichier.txt dest.txt         # Pas écraser
+mv -v fichier.txt dest.txt         # Verbeux
+mv -f fichier.txt dest.txt         # Forcer
+mv *.txt dossier/                   #Tous les .txt
 ```
 
-### wc - Compter lignes, mots, caractères
+---
+
+## 6. Supprimer des fichiers
+
+### rm - remove
 
 ```bash
-# Compter lignes, mots et caractères
-wc fichier.txt
+rm fichier.txt                   # Supprimer fichier
+rm -r dossier/                   # Supprimer dossier
+rm -rf dossier/                  # Forcer (sans confirmation)
+rm -ri dossier/                  # Confirmer chaque
+rm -v fichier.txt                 # Verbeux
 
-# Compter uniquement les lignes
-wc -l fichier.txt
-
-# Compter uniquement les mots
-wc -w fichier.txt
+# ⚠️ DANGEREUX - NE JAMAIS FAIRE :
+rm -rf /              # SUPPRIMER TOUT LE SYSTÈME !
+rm -rf .             # Supprimer tout dossier courant
+rm -rf *             # Supprimer TOUT le contenu
 ```
 
-## 2.4 Recherche de fichiers
-
-### find - Rechercher des fichiers
+### rmdir - remove directory
 
 ```bash
-# Rechercher par nom
-find /home -name "*.txt"
-
-# Rechercher dans le répertoire courant
-find . -name "fichier.txt"
-
-# Rechercher par type (f = fichier, d = répertoire)
-find . -type d -name "Documents"
-
-# Rechercher par taille
-find . -size +100M
-
-# Rechercher par date de modification
-find . -mtime -7  # modifiés il y a moins de 7 jours
+rmdir dossier              # Supprimer dossier vide
+rmdir -p a/b/c/d           # Supprimer chemin vide
 ```
 
-### locate - Recherche rapide
+---
+
+## 7. Lire le contenu des fichiers
+
+### cat - concatenate
 
 ```bash
-# Rechercher un fichier (doit être indexé)
-locate mon_fichier
-
-# Mettre à jour la base de données
-sudo updatedb
+cat fichier.txt                    # Afficher tout
+cat -n fichier.txt                 # Avec numéros de ligne
+cat -b fichier.txt                 # Numéros lignes non-vides
+cat -s fichier.txt                 # Supprimer lignes vides multiples
+cat fichier1.txt fichier2.txt      # Concaténer
+cat -A fichier.txt                 # Afficher caractères spéciaux
 ```
 
-## 2.5 Exercices pratiques
+### less - afficher page par page
+
+```bash
+less gros_fichier.log              # Afficher
+less -N gros_fichier              # Numéros de ligne
+less -S gros_fichier              # Sans retour à la ligne
+```
+
+**Commandes dans less :**
+
+| Touche | Action |
+|--------|--------|
+| Espace | Page suivante |
+| b | Page précédente |
+|Entrée | Ligne suivante |
+| q | Quitter |
+| /motif | Rechercher en avant |
+| ?motif | Rechercher en arrière |
+| n | Résultat suivant |
+| N | Résultat précédent |
+| g | Début du fichier |
+| G | Fin du fichier |
+
+### head - début du fichier
+
+```bash
+head fichier.txt                   # 10 premières lignes
+head -n 20 fichier.txt            # 20 premières lignes
+head -c 100 fichier.txt            # 100 premiers octets
+head -q fichier1.txt fichier2.txt # Plusieurs fichiers
+```
+
+### tail - fin du fichier
+
+```bash
+tail fichier.txt                   # 10 dernières lignes
+tail -n 20 fichier.txt             # 20 dernières lignes
+tail -f fichier.log                # Suivre en temps réel
+tail -f -n 100 fichier.log         # 100 dernières lignes en direct
+tail -c 100 fichier.txt            # 100 derniers octets
+```
+
+### nl - numbered lines
+
+```bash
+nl fichier.txt                     # Afficher avec numéros
+nl -ba fichier.txt                 # Numéros même lignes vides
+```
+
+---
+
+## 8. Compter et analyser
+
+### wc - word count
+
+```bash
+wc fichier.txt                     # Lignes mots octets
+wc -l fichier.txt                  # Nombre de lignes
+wc -w fichier.txt                  # Nombre de mots
+wc -c fichier.txt                  # Nombre d'octets
+wc -m fichier.txt                  # Nombre de caractères
+```
+
+### file - type de fichier
+
+```bash
+file fichier.txt
+file *
+file -z archive.tar.gz             # Contenu sans décompresser
+```
+
+---
+
+## 9. Commandes d'information
+
+### date - afficher la date
+
+```bash
+date                   # Date et heure
+date +%H:%M            # Juste l'heure
+date +%d/%m/%Y         # Format personnalisé
+date -d "tomorrow"     # Date future
+date -d "2 days ago"  # Date passée
+```
+
+### whoami - utilisateur courant
+
+```bash
+whoami                 # Nom de l'utilisateur
+whoami -r             # ID du groupe
+```
+
+### uptime - temps de fonctionnement
+
+```bash
+uptime                 # Heures de fonctionnement
+uptime -s              # Depuis quand allumé
+```
+
+### cal - calendrier
+
+```bash
+cal                    # Mois en cours
+cal 2024                #Année entière
+cal -3                 # 3 mois
+cal -m 1               # Janvier avec Lundi
+```
+
+---
+
+## 10. Alias et raccourcis
+
+### Créer des alias
+
+```bash
+# Temporaire (session)
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Permanent (ajouter à ~/.bashrc)
+echo "alias ll='ls -la'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+### Raccourcis clavier
+
+| Raccourci | Action |
+|-----------|--------|
+| Tab | Complétion automatique |
+| Ctrl+C | Interrompre commande |
+| Ctrl+Z | Suspendre commande |
+| Ctrl+L | Effacer l'écran |
+| Ctrl+U | Effacer la ligne |
+| Ctrl+K | Effacer jusqu'à la fin |
+| Ctrl+A | Début de ligne |
+| Ctrl+E | Fin de ligne |
+| Ctrl+R | Rechercher dans l'historique |
+| !! | Dernière commande |
+| !$ | Dernier argument |
+| !!:gs/old/new | Remplacer dans la dernière commande |
+
+---
+
+## 11. Exercices pratiques
 
 ### Exercice 1 : Navigation
-1. Ouvrez un terminal
-2. Affichez votre répertoire courant avec `pwd`
-3. Listez les fichiers avec `ls -la`
-4. Créez un dossier nommé "exercices_linux" avec `mkdir`
-5. Entrez dans ce dossier avec `cd`
-6. Vérifiez votre position avec `pwd`
+```bash
+pwd                              # Où suis-je ?
+cd /tmp                          # Aller dans /tmp
+cd ~                             # Retour au home
+cd -                             # Revenir au précédent
+```
 
-### Exercice 2 : Manipulation de fichiers
-1. Créez un fichier vide nommé "test.txt" avec `touch`
-2. Copiez ce fichier vers "test_copie.txt"
-3. Renommez le fichier original en "mon_fichier.txt"
-4. Listez les fichiers pour vérifier
-5. Supprimez les fichiers avec `rm`
+### Exercice 2 : Créer une structure
+```bash
+mkdir -p projet/{src,docs,tests}
+touch projet/src/main.py
+touch projet/tests/test_main.py
+ls -R projet/
+```
 
-### Exercice 3 : Lecture de fichiers
-1. Affichez le contenu de `/etc/os-release` avec `cat`
-2. Utilisez `head` et `tail` pour voir le début et la fin
-3. Parcourez un fichier volumineux avec `less`
+### Exercice 3 : Manipulation de fichiers
+```bash
+echo "#!/bin/bash" > script.sh
+chmod +x script.sh
+cp script.sh script_backup.sh
+ls -l *.sh
+```
 
-### Exercice 4 : Recherche
-1. Utilisez `find` pour rechercher tous les fichiers ".txt" dans votre dossier personnel
-2. Comparez avec la commande `locate` (si disponible)
+### Exercice 4 : Lire des logs
+```bash
+head -20 /var/log/syslog
+tail -f /var/log/syslog          # En temps réel
+grep -i error /var/log/syslog | head -10
+```
 
-## 2.6 Résumé
+---
+
+## 12. Tableau résumé
 
 | Commande | Description |
-|----------|--------------|
-| `pwd` | Affiche le répertoire courant |
-| `ls` | Liste les fichiers |
-| `cd` | Change de répertoire |
-| `mkdir` | Crée un répertoire |
-| `touch` | Crée un fichier vide |
-| `cp` | Copie des fichiers |
-| `mv` | Déplace ou renomme |
-| `rm` | Supprime des fichiers |
-| `cat` | Affiche le contenu d'un fichier |
-| `less` | Affiche page par page |
-| `head` | Affiche le début d'un fichier |
-| `tail` | Affiche la fin d'un fichier |
-| `find` | Recherche de fichiers |
+|----------|-------------|
+| `pwd` | Répertoire courant |
+| `ls` | Lister fichiers |
+| `cd` | Changer répertoire |
+| `mkdir` | Créer dossier |
+| `touch` | Créer fichier |
+| `cp` | Copier |
+| `mv` | Déplacer/renommer |
+| `rm` | Supprimer |
+| `cat` | Afficher fichier |
+| `less` | Afficher page par page |
+| `head` | Début du fichier |
+| `tail` | Fin du fichier |
+| `wc` | Compter |
 
-Ces commandes sont les fondations de l'utilisation de Linux. Pratiquez-les régulièrement pour devenir à l'aise avec le terminal !
+---
 
-
-
-*Dans la prochaine leçon, nous aborderons les permissions des fichiers.*
+Ces commandes sont ton quotidien sous Linux. Maîtrise-les ! 💪
