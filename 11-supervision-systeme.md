@@ -1,148 +1,345 @@
 # Leçon 11 : Surveillance et supervision système
 
-Dans cette leçon, nous allons apprendre à surveiller l'état de votre système Linux : l'utilisation CPU, mémoire, disque et les processus en cours d'exécution.
+Dans cette leçon, tu vas maîtriser tous les outils de surveillance Linux : CPU, mémoire, disque, processus et services. Indispensable pour diagnostiquer les problèmes.
 
-## Pourquoi surveiller son système ?
+---
 
-Quand votre ordinateur ralentit ou qu'un programme se bloque, il faut savoir :
-- Quelle application utilise trop de ressources ?
-- Quelle est l'utilisation de la mémoire ?
-- Y a-t-il assez d'espace disque ?
+## 1. Surveillance CPU
 
-Linux offre plusieurs outils intégrés pour répondre à ces questions.
-
-## Les commandes essentielles
-
-### `top` - Vue d'ensemble en temps réel
+### Commande top
 
 ```bash
-top
+top                  # Vue en temps réel
+top -u david         # Filtrer par utilisateur
+top -p 1234          # Surveiller un processus spécifique
+top -1               # Rafraîchir chaque seconde
 ```
 
-Cette commande affiche un tableau dynamique avec :
-- **Uptime** : depuis combien de temps le système est allumé
-- **Utilisateurs** : nombre d'utilisateurs connectés
-- **Charge système** : moyenne de charge (1, 5, 15 minutes)
-- **Tasks** : nombre de processus
-- **Cpu(s)** : pourcentage d'utilisation du processeur
-- **Mem** : mémoire utilisée/totale
-- **Swap** : swap utilisé/total
+### Comprendre la sortie de top
 
-La **charge système** (load average) indique la moyenne de processus en attente ou en cours d'exécution. Sur un système à 4 cœurs, une charge de 4 = 100% d'utilisation.
+```
+top - 10:30:15 up  5:42,  1 user,  load average: 0.52, 0.58, 0.59
+Tasks: 245 total,   1 running, 244 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  5.3 us,  2.1 sy,  0.0 ni, 92.1 id,  0.0 wa,  0.0 hi,  0.6 si,  0.0 st
+MiB Mem :  7938.5 total,  2345.2 free,  4120.0 used,  1473.3 buff/cache
+MiB Swap:  2048.0 total,  1024.0 free,  1024.0 used.  5800.0 avail Mem
+```
 
-Pour quitter `top`, appuyez sur `q`.
+### Commandes interactives de top
 
-### `htop` - Version améliorée de top
+| Touche | Description |
+|--------|-------------|
+| `q` | Quitter |
+| `M` | Trier par mémoire |
+| `P` | Trier par CPU |
+| `k` | Tuer un processus |
+| `r` | Modifier la priorité (renice) |
+| `1` | Afficher tous les CPUs |
+| `f` | Changer les colonnes |
+| `x` | Surbrillance colonne tri |
+
+### Load Average
+
+Le **load average** indique la charge système sur 1, 5 et 15 minutes.
+
+| Load | 1 cœur | 4 cœurs | Interprétation |
+|------|--------|----------|---------------|
+| 1.0 | 100% | 25% | 1 processus en cours |
+| 4.0 | 400% | 100% | Système à pleine capacité |
+| 8.0 | 800% | 200% | Surcharge (processus en attente) |
+
+---
+
+## 2. Surveillance mémoire
+
+### free - Mémoire vive
 
 ```bash
-htop
+free                # En octets
+free -h             # Format lisible (Ko, Mo, Go)
+free -m             # En mégaoctets
+free -g             # En gigaoctets
+free -s 1           # Rafraîchir chaque seconde
 ```
 
-**htop** est une version plus belle et plus pratique de `top` :
-- Barre de couleur pour CPU et mémoire
-- Navigation au clavier (flèches)
-- Possibilité de tuer un processus avec `F9`
-- Vue en arbre des processus
+### Comprendre la sortie
 
-Si pas installé :
-```bash
-sudo apt install htop    # Debian/Ubuntu
-sudo dnf install htop    # Fedora
+```
+              total        used        free      shared  buff/cache   available
+Mem:        8.0Gi       4.1Gi       2.3Gi       150Mi       1.5Gi       3.5Gi
+Swap:       2.0Gi       512Mi       1.5Gi
 ```
 
-### `df` - Espace disque
+| Colonne | Description |
+|---------|-------------|
+| **total** | Mémoire totale |
+| **used** | Mémoire utilisée (vraiment) |
+| **free** | Mémoire totally libre |
+| **buff/cache** | Mémoire pour les buffers/disque |
+| **available** | Mémoire disponible pour les apps |
+| **Swap** | Mémoire virtuelle sur disque |
 
-```bash
-df -h
-```
-
-L'option `-h` affiche les tailles en format lisible (Ko, Mo, Go).
-
-Colonnes importantes :
-- **Filesystem** : le disque ou partition
-- **Size** : taille totale
-- **Used** : espace utilisé
-- **Avail** : espace disponible
-- **Use%** : pourcentage utilisé
-- **Mounted on** : point de montage
-
-### `free` - Mémoire vive
+### Calcul du pourcentage
 
 ```bash
-free -h
+# Calculer le pourcentage utilisé
+free | grep Mem | awk '{printf("%.1f\n", $3/$2 * 100)}'
 ```
 
-Affiche :
-- **total** : mémoire totale
-- **used** : mémoire utilisée
-- **free** : mémoire libre
-- **shared** : mémoire partagée
-- **buff/cache** : mémoire pour les buffers et cache
-- **available** : mémoire réellement disponible
+---
 
-### `du` - Taille des fichiers/dossiers
+## 3. Surveillance disque
+
+### df - Espace disque
 
 ```bash
-du -sh /home/user      # Taille totale d'un dossier
-du -h --max-depth=1    # Taille des sous-dossiers (1 niveau)
+df                  # En octets
+df -h               # Format lisible
+df -H               # FormatIEC (1000 au lieu de 1024)
+df -T               # Avec type de système de fichiers
+df -i               # Inodes au lieu de blocs
 ```
 
-### `ps` - Liste des processus
+### Analyser l'espace
 
 ```bash
-ps                     # Processus de l'utilisateur actuel
-ps aux                 # Tous les processus (vue détaillée)
-ps aux | grep firefox  # Chercher un processus spécifique
+# Partition la plus pleine
+df -h | grep -v tmpfs | sort -k5 -h | tail -5
+
+# Espace par type de filesystem
+df -Th | grep -v tmpfs
 ```
 
-### `kill` - Terminer un processus
+### du - Taille des dossiers
 
 ```bash
-kill <PID>             # Envoyer SIGTERM (demande polie)
-kill -9 <PID>          # Forcer l'arrêt (SIGKILL)
+du -sh dossier/           # Taille totale
+du -h --max-depth=1       # Sous-dossiers (1 niveau)
+du -h --max-depth=2       # Sous-dossiers (2 niveaux)
+du -ah dossier/           # Avec fichiers cachés
+du -d 1 -h               # Profondeur 1
+du -sh */                 # Tous les sous-dossiers
 ```
 
-Pour trouver le PID : `ps aux | grep nom_programme`
-
-### `systemctl` - Gérer les services
+### ncdu - Interface interactive
 
 ```bash
-systemctl status nginx      # État d'un service
-systemctl start nginx      # Démarrer un service
-systemctl stop nginx       # Arrêter un service
-systemctl restart nginx    # Redémarrer un service
+# Installer
+sudo apt install ncdu
+
+# Utiliser
+ncdu                    # Répertoire courant
+ncdu /home             # Dossier spécifique
 ```
 
-## Exercice pratique
+---
 
-1. **Ouvrir un terminal et exécuter `top`**
-   - Observer la charge système
-   - Identifier le processus qui utilise le plus de CPU
-   - Quitter avec `q`
+## 4. Surveillance processus
 
-2. **Vérifier l'espace disque**
-   - Exécuter `df -h`
-   - Identifier quelle partition est la plus pleine
+### ps - Liste des processus
 
-3. **Vérifier la mémoire**
-   - Exécuter `free -h`
-   - Calculer le pourcentage de mémoire utilisée
+```bash
+ps              # Basique
+ps aux          # Tous les utilisateurs
+ps -ef          # Format étendu
+ps -eo pid,ppid,%mem,%cpu,cmd  # Colonnes personnalisées
+ps --sort=-%cpu | head -10    # Top CPU
+ps --sort=-%mem | head -10    # Top mémoire
+```
 
-4. **Trouver et "tuer" un processus fantôme**
-   - Ouvrir une application (par exemple Firefox)
-   - Trouver son PID avec `ps aux | grep firefox`
-   - Noter le PID puis le tuer avec `kill <PID>`
+### Rechercher un processus
 
-## Résumé
+```bash
+ps aux | grep firefox              # Trouver firefox
+pgrep -a firefox                   # Juste les PIDs
+pidof firefox                      # PID principal
+pstree                             # Vue arborescence
+```
 
-| Commande | Utilité |
-|----------|---------|
-| `top` | Surveillance en temps réel (CPU, mémoire, processus) |
-| `htop` | Version améliorée de top (si installé) |
-| `df -h` | Espace disque disponible |
-| `free -h` | Mémoire vive disponible |
-| `du -sh dossier` | Taille d'un dossier |
-| `ps aux` | Liste de tous les processus |
-| `kill PID` | Terminer un processus |
+### Stat d'un processus
 
-Ces commandes sont vos meilleur·es allié·es pour diagnostiquer les problèmes de performance sur votre système Linux.
+```bash
+# Ressources utilisées
+pidstat -p 1234 1
+
+# Fichiers ouverts
+lsof -p 1234
+
+# Connexions réseau
+ss -tp | grep 1234
+```
+
+---
+
+## 5. Tuer et gérer les processus
+
+### kill - Envoyer un signal
+
+```bash
+kill 1234                    # SIGTERM (propre)
+kill -15 1234                # Identique
+kill -9 1234                 # SIGKILL (forcement)
+kill -SIGTERM -1234          # Groupe de processus
+```
+
+###killall et pkill
+
+```bash
+killall firefox              # Par nom
+pkill firefox                 # Par pattern
+pkill -9 -f "python script" # Forcé avec pattern
+```
+
+### Modifier la priorité
+
+```bash
+nice -n 10 commande          # Priorité basse
+renice 5 -p 1234            # Changer priorité
+renice -5 -p 1234           # Priorité haute (root)
+renice 0 -u david           # Tous les processus d'un user
+```
+
+---
+
+## 6. Surveillance réseau
+
+### Commandes utiles
+
+```bash
+# Connexions actives
+ss -tuln                    # TCP/UDP en écoute
+ss -tnp                     # Connexions établies
+ss -tp | grep ESTAB         # Connections actives
+
+# Statistiques réseau
+netstat -s                   # Stats complètes
+netstat -i                   # Stats par interface
+
+# Monitoring temps réel
+nload                       # Bande passante
+iftop                       # Connexions par hôte
+bmon                        # Surveillance graphique
+```
+
+---
+
+## 7. Surveillance des services (systemd)
+
+### systemctl
+
+```bash
+# État d'un service
+systemctl status nginx
+
+# Services actifs
+systemctl list-units --type=service --state=running
+
+# Services échoués
+systemctl --failed
+
+# Logs d'un service
+journalctl -u nginx -n 50
+journalctl -u nginx -f
+```
+
+---
+
+## 8. Métriques système avancées
+
+### vmstat - Statistiques virtuelles
+
+```bash
+vmstat 1                    # Rafraîchir chaque seconde
+vmstat -S M 1               # En Mo
+vmstat 1 5                  # 5 snapshots
+```
+
+### iostat - Statistiques I/O
+
+```bash
+# Installer
+sudo apt install sysstat
+
+# Utiliser
+iostat -x 1                 # Stats détaillées
+iostat -dxh 1              # Disques en format lisible
+```
+
+### sar - System Activity Reporter
+
+```bash
+sar -u 1 10                 # CPU chaque seconde, 10 fois
+sar -r 1 10                 # Mémoire
+sar -d 1 10                 # Disque
+sar -n DEV 1 10             # Réseau
+```
+
+---
+
+## 9. Scripts de surveillance
+
+### Script d'alerte disque
+
+```bash
+#!/bin/bash
+
+DISK_USAGE=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//')
+
+if [ $DISK_USAGE -gt 90 ]; then
+    echo "ALERTE: Disque à ${DISK_USAGE}%" | mail -s "Alerte Disque" admin@email.com
+fi
+```
+
+### Script d'alerte mémoire
+
+```bash
+#!/bin/bash
+
+MEM_USAGE=$(free | grep Mem | awk '{printf("%.0f", $3/$2 * 100)}')
+
+if [ $MEM_USAGE -gt 85 ]; then
+    logger "Alerte: Mémoire à ${MEM_USAGE}%"
+fi
+```
+
+### Surveillance continue
+
+```bash
+#!/bin/bash
+
+while true; do
+    clear
+    echo "=== $(date) ==="
+    echo ""
+    echo "--- CPU ---"
+    top -bn1 | head -5
+    echo ""
+    echo "--- Mémoire ---"
+    free -h
+    echo ""
+    echo "--- Disque ---"
+    df -h / | tail -1
+    sleep 5
+done
+```
+
+---
+
+## 10. Tableau résumé
+
+| Commande | Description |
+|----------|-------------|
+| `top` | Surveillance CPU/mémoire temps réel |
+| `htop` | top avec interface améliorée |
+| `free` | Mémoire RAM |
+| `df` | Espace disque |
+| `du` | Taille dossiers |
+| `ps` | Liste processus |
+| `kill` | Terminer processus |
+| `ss` | Connexions réseau |
+| `systemctl` | Gérer services |
+| `journalctl` | Logs systemd |
+
+---
+
+Maîtrise ces outils pour devenir un pro de la supervision Linux ! 📊
