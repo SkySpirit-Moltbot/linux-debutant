@@ -1,127 +1,329 @@
 # Leçon 14 : Gestion des utilisateurs et groupes
 
-## Introduction
-
-Linux est un système multi-utilisateurs. Chaque personne qui accède à une machine Linux le fait via un compte utilisateur. Comprendre comment créer, modifier et supprimer des utilisateurs, ainsi que comment gérer les groupes, est essentiel pour tout administrateur système.
+Dans cette leçon, tu vas maîtriser la gestion des utilisateurs et groupes sous Linux, essentiel pour l'administration système.
 
 ---
 
-## Les fichiers de configuration
+## 1. Concepts de base
 
-Avant de manipuler les utilisateurs, connais ces fichiers clés :
+### Utilisateur
+
+Un utilisateur Linux possède :
+- **UID** : Identifiant unique
+- **GID** : Groupe principal
+- **Répertoire personnel** : /home/username
+- **Shell** : Interpréteur par défaut
+- **Mot de passe** : Stocké dans /etc/shadow
+
+### Groupe
+
+Un groupe permet de :
+- Partager des fichiers entre utilisateurs
+- Gérer des permissions collectivement
+
+### Fichiers système importants
 
 | Fichier | Description |
 |---------|-------------|
-| `/etc/passwd` | Liste de tous les utilisateurs (nom, UID, GID, shell, etc.) |
-| `/etc/shadow` | Contient les mots de passe chiffrés |
-| `/etc/group` | Liste des groupes et de leurs membres |
-| `/etc/skel/` | Répertoire modèle pour les nouveaux utilisateurs |
+| `/etc/passwd` | Infos utilisateurs |
+| `/etc/shadow` | Mots de passe chiffrés |
+| `/etc/group` | Infos groupes |
+| `/etc/skel/` | Modèle pour nouveaux utilisateurs |
 
 ---
 
-## Commandes de base
+## 2. Commandes utilisateur
 
 ### Ajouter un utilisateur
 
 ```bash
-sudo useradd -m david       # Crée l'utilisateur "david" avec son répertoire personnel
-sudo passwd david           # Définit le mot de passe de david
-```
+# Créer un utilisateur
+sudo useradd -m nom_utilisateur
 
-Options utiles :
-- `-m` : Crée le répertoire home (`/home/david`)
-- `-s /bin/bash` : Définit le shell par défaut
-- `-G groupe1,groupe2` : Ajoute à des groupes secondaires
+# Avec options
+sudo useradd -m -s /bin/bash -c "Description" -G groupe1,groupe2 nom
 
-### Supprimer un utilisateur
-
-```bash
-sudo userdel david          # Supprime l'utilisateur (garde le home)
-sudo userdel -r david       # Supprime aussi le répertoire home
+#交互式
+sudo adduser nom_utilisateur
 ```
 
 ### Modifier un utilisateur
 
 ```bash
-sudo usermod -l nouveau_nom ancien_nom    # Renomme l'utilisateur
-sudo usermod -aG groupe utilisateur       # Ajoute à un groupe (IMPORTANT : -a sinon remplace)
-sudo usermod -s /bin/sh utilisateur       # Change le shell
+# Changer le shell
+sudo usermod -s /bin/zsh nom
+
+# Ajouter à un groupe
+sudo usermod -aG groupe nom
+
+# Changer le répertoire home
+sudo usermod -d /nouveau/chemin -m nom
+
+# Verrouiller/déverrouiller un compte
+sudo usermod -L nom           # Verrouiller
+sudo usermod -U nom           # Déverrouiller
+```
+
+### Supprimer un utilisateur
+
+```bash
+# Supprimer (garde les fichiers)
+sudo userdel nom
+
+# Supprimer avec fichiers
+sudo userdel -r nom
+
+# Supprimer avec confirmation
+sudo userdel -r -f nom
+```
+
+### Changer le mot de passe
+
+```bash
+# Changer son mot de passe
+passwd
+
+# Changer mot de passe d'un autre utilisateur (root)
+sudo passwd nom_utilisateur
+
+# Vider le mot de passe
+sudo passwd -d nom_utilisateur
+
+# Expirer le mot de passe
+sudo passwd -e nom_utilisateur
 ```
 
 ---
 
-## Gestion des groupes
+## 3. Commandes groupe
 
-### Créer et supprimer un groupe
+### Créer un groupe
 
 ```bash
-sudo groupadd developpeurs   # Crée le groupe "developpeurs"
-sudo groupdel developpeurs   # Supprime le groupe
+sudo groupadd nom_groupe
+sudo groupadd -g 1005 nom_groupe   # Avec GID spécifique
 ```
 
-### Ajouter/retirer des membres
+### Modifier un groupe
 
 ```bash
-sudo gpasswd -a david developpeurs   # Ajoute david au groupe
-sudo gpasswd -d david developpeurs   # Retire david du groupe
+# Renommer un groupe
+sudo groupmod -n nouveau_nom ancien_nom
+
+# Changer le GID
+sudo groupmod -g 1006 nom_groupe
 ```
 
-### Voir ses groupes
+### Supprimer un groupe
 
 ```bash
-id              # Affiche UID, GID et tous les groupes
-groups          # Affiche seulement les groupes
+sudo groupdel nom_groupe
 ```
 
----
-
-## Exemple pratique
-
-### Scenario : Créer un utilisateur pour un nouvel employé
+### Gérer les membres
 
 ```bash
-# 1. Créer l'utilisateur avec son répertoire
-sudo useradd -m -s /bin/bash -G sudo,navigation marc
+# Ajouter un utilisateur à un groupe
+sudo usermod -aG groupe utilisateur
 
-# 2. Définir son mot de passe
-sudo passwd marc
+# Retirer d'un groupe
+sudo gpasswd -d utilisateur groupe
 
-# 3. Vérifier
-id marc
-# Résultat : uid=1001(marc) gid=1001(marc) groups=1001(marc),27(sudo),100(navigation)
-```
-
-### Changer le propriétaire d'un fichier
-
-```bash
-sudo chown marc:developpeurs /var/projet      # Change propriétaire ET groupe
-sudo chown marc /var/projet                   # Change seulement le propriétaire
-sudo chgrp developpeurs /var/projet            # Change seulement le groupe
+# Voir les membres d'un groupe
+getent group groupe
 ```
 
 ---
 
-## Exercice pratique
+## 4. Informations et listing
 
-1. **Crée un utilisateur test** nommé "stagiaire" avec un répertoire personnel
-2. **Crée un groupe** nommé "stagiaires"
-3. **Ajoute "stagiaire"** au groupe "stagiaires"
-4. **Vérifie** avec la commande `id` que tout est correct
-5. **Crée un fichier** dans `/tmp` et change son propriétaire pour "stagiaire"
-6. **Supprime** l'utilisateur et le groupe créés
+### Voir les utilisateurs
+
+```bash
+# Liste des utilisateurs
+cat /etc/passwd
+# ou
+getent passwd
+
+# Filtrer
+getent passwd | cut -d: -f1
+
+# Derniers utilisateurs créés
+lastlog
+```
+
+### Voir les groupes
+
+```bash
+# Liste des groupes
+cat /etc/group
+# ou
+getent group
+
+# groupes d'un utilisateur
+groups nom_utilisateur
+id nom_utilisateur
+```
+
+### Voir l'UID et GID
+
+```bash
+id                       # Ses propres IDs
+id nom_utilisateur       # IDs d'un utilisateur
+```
 
 ---
 
-## Résumé
+## 5. Commandes avancées
 
-| Commande | Action |
-|----------|--------|
-| `useradd -m nom` | Crée un utilisateur |
-| `passwd nom` | Définit le mot de passe |
-| `userdel -r nom` | Supprime l'utilisateur et son home |
-| `groupadd nom` | Crée un groupe |
-| `usermod -aG groupe user` | Ajoute un utilisateur à un groupe |
-| `id user` | Affiche les infos d'un utilisateur |
-| `chown user:groupe fichier` | Change propriétaire et groupe |
+### sudoers - Permissions sudo
 
-La gestion des utilisateurs et groupes est fondamentale pour la sécurité et l'organisation d'un système Linux. Maîtrise ces commandes pour掌控er accès à ta machine !
+```bash
+# Éditer le fichier sudoers (TOUJOURS avec visudo!)
+sudo visudo
+
+# Ajouter un utilisateur au groupe sudo
+sudo usermod -aG sudo nom
+
+# Voir qui a sudo
+getent group sudo
+```
+
+### Expiration de compte
+
+```bash
+# Définir une date d'expiration
+sudo usermod -e 2024-12-31 nom
+
+# Voir la date d'expiration
+sudo chage -l nom
+
+#Forcer changement mot de passe
+sudo chage -d 0 nom
+```
+
+### Verrouillage de compte
+
+```bash
+# Verrouiller
+sudo passwd -l nom
+
+# Déverrouiller
+sudo passwd -u nom
+
+# Voir le statut
+sudo passwd -S nom
+```
+
+---
+
+## 6. Gestion des mots de passe
+
+### Politiques de mot de passe
+
+```bash
+# Installer libpam-pwquality
+sudo apt install libpam-pwquality
+
+# Configurer (/etc/security/pwquality.conf)
+sudo nano /etc/security/pwquality.conf
+```
+
+### Exigences communes
+
+```
+minlen = 12
+dcredit = -1          # Au moins 1 chiffre
+ucredit = -1          # Au moins 1 majuscule
+lcredit = -1          # Au moins 1 minuscule
+ocredit = -1          # Au moins 1 caractère spécial
+```
+
+### Historique et expiration
+
+```bash
+# Configuration dans /etc/login.defs
+# ou avec chage
+sudo chage -m 7 nom       # Minimum 7 jours
+sudo chage -M 90 nom      # Maximum 90 jours
+sudo chage -W 7 nom       # Avertissement 7 jours avant expiration
+sudo chage -I 30 nom      # Verrouillage 30 jours après expiration
+```
+
+---
+
+## 7. Scripts pratiques
+
+### Créer un nouvel utilisateur avec tout
+
+```bash
+#!/bin/bash
+
+# Variables
+USERNAME="nouvelutilisateur"
+FULLNAME="Nouvel Utilisateur"
+SHELL="/bin/bash"
+GROUPES="sudo,users"
+
+# Créer le groupe principal s'il n'existe pas
+sudo groupadd $USERNAME 2>/dev/null
+
+# Créer l'utilisateur
+sudo useradd -m -s $SHELL -c "$FULLNAME" -G $GROUPES $USERNAME
+
+# Définir le mot de passe
+sudo passwd $USERNAME
+
+echo "Utilisateur $USERNAME créé avec succès!"
+```
+
+### Script de suppression
+
+```bash
+#!/bin/bash
+
+USERNAME="utilisateur_a_supprimer"
+
+# Demander confirmation
+read -p "Supprimer l'utilisateur $USERNAME? (o/n): " confirm
+
+if [ "$confirm" = "o" ]; then
+    sudo userdel -r $USERNAME
+    echo "Utilisateur supprimé."
+else
+    echo "Annulé."
+fi
+```
+
+---
+
+## 8. Bonnes pratiques
+
+| Pratique | Description |
+|----------|-------------|
+| Utiliser sudo | Pas de connection root directe |
+| Mots de passe forts | Minimum 12 caractères, mélange |
+| Groupes logiques | Regrouper par projet/fonction |
+| Audit régulier | Vérifier les utilisateurs |
+| Désactiver compte | Jamais supprimer (garder UID) |
+| Limiter sudo | Seulement utilisateurs nécessaires |
+
+---
+
+## 9. Résumé
+
+| Commande | Description |
+|----------|-------------|
+| `useradd` | Créer utilisateur |
+| `usermod` | Modifier utilisateur |
+| `userdel` | Supprimer utilisateur |
+| `passwd` | Changer mot de passe |
+| `groupadd` | Créer groupe |
+| `groupdel` | Supprimer groupe |
+| `groups` | Lister ses groupes |
+| `id` | Voir UID/GID |
+| `getent` | Consulter base |
+
+---
+
+Maîtrise la gestion des utilisateurs pour administrer Linux correctement ! 👤
