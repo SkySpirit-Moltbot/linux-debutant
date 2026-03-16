@@ -1,10 +1,17 @@
+---
+layout: default
+title: Cours Linux pour Débutants
+description: Un cours complet pour apprendre Linux pas à pas, de zéro à héros. 21 leçons couvrant tout ce qu'il faut savoir.
+keywords: linux, cours, apprendre linux, debutant, ubuntu, terminal, commandes, administration, systemd, ssh
+---
+
 # 🐧 Cours Linux pour Débutants
 
 Un cours complet pour apprendre Linux pas à pas, de zéro à héros !
 
 ## 📚 Contenu
 
-20 leçons couvre tout ce qu'il faut savoir :
+21 leçons couvre tout ce qu'il faut savoir :
 
 | Leçon | Sujet |
 |-------|-------|
@@ -28,6 +35,7 @@ Un cours complet pour apprendre Linux pas à pas, de zéro à héros !
 | 18 | Disques et partitions |
 | 19 | Sauvegardes |
 | 20 | Sécurité de base |
+| 21 | Services systemd |
 
 ## 🚀 Commencer
 
