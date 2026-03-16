@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/21-services-systemd.html">
-    <meta property="og:title" content="Services systemd - SkyLinux">
-    <meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
-    <title>Services systemd - SkyLinux - Le guide pour tous</title>
-<meta name="keywords" content="linux, cours, services, systemd, debutant, ubuntu">
+<title>Services Systemd - SkyLinux</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/21-services-systemd.html">
+<meta property="og:title" content="Services Systemd - SkyLinux">
+<meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
+<meta name="description" content="Services Systemd - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, Services Systemd, debutant, ubuntu">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
@@ -28,11 +29,13 @@ a { color: #00d9ff; text-decoration: none; }
 table { width: 100%; border-collapse: collapse; margin: 20px 0; }
 th, td { border: 1px solid #333; padding: 12px; }
 th { background: rgba(0,217,255,0.1); color: #00d9ff; }
+nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; }
+nav a { color: #00d9ff; }
 </style>
 </head>
 <body>
 <div class="container">
-<a href="index.html" class="back">← Retour au sommaire</a>
+<a href="index.html" class="back">&larr; Retour au sommaire</a>
 <h1>Leçon 21 : Gestion des services avec systemd</h1>
 <h2>Introduction</h2>
 <p><strong>systemd</strong> est le système d'initialisation et le gestionnaire de services le plus utilisé dans les distributions Linux modernes (Ubuntu, Debian, Fedora, CentOS, etc.). Il permet de démarrer, arrêter, redémarrer et gérer les services (daemons) du système.</p>
@@ -198,11 +201,11 @@ sudo systemctl cat nginx
 <li><strong>Lister les services</strong> : <code>systemctl list-units --type=service</code></li>
 </ul>
 <p>La maîtrise de systemd est essentielle pour administrer un système Linux moderne. Les commandes vues dans cette leçon vous permettront de gérer efficacement les services de votre système.</p>
-</div>
 
-<nav style="display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;border-top:1px solid #333;">
-
-<a href="20-securite-base.html" style="color:#00d9ff;">&larr; Securite Base</a>
+<nav>
+<a href="20-securite-base.html">&larr; Securite Base</a>
 <span></span>
 </nav>
-</body></html>
+</div>
+</body>
+</html>
