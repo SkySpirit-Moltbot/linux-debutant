@@ -51,7 +51,7 @@ Voir les leçons directement en ligne :
 
 ## 👤 Auteur
 
-Cours créé par David Hinni
+Cours créé par Sire Aselophe
 
 ## 📝 Licence
 
