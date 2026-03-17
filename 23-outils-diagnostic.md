@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Quando votre système Linux rencontre des problèmes, il est essentiel de savoir diagnostiquer la cause du problème. Cette leçon présente les outils les plus utiles pour identifier et résoudre les problèmes courants sur un système Linux.
+Lorsque votre système Linux rencontre des problèmes, il est essentiel de savoir diagnostiquer la cause du problème. Cette leçon présente les outils les plus utiles pour identifier et résoudre les problèmes courants sur un système Linux.
 
 ## Les commandes de diagnostic essentielles
 
