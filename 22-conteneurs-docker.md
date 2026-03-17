@@ -1,220 +1,411 @@
-# Leçon 22 : Introduction aux conteneurs Docker
+# Leçon 22 : Conteneurs Docker
 
-## Qu'est-ce qu'un conteneur ?
+## Introduction
 
-Un conteneur est une méthode légère pour empaqueter une application avec toutes ses dépendances. Contrairement aux machines virtuelles, les conteneurs partagent le noyau du système hôte, ce qui les rend beaucoup plus rapides et moins gourmands en ressources.
+Docker est une plateforme de conteneurisation qui permet d'empaqueter une application avec toutes ses dépendances. Les conteneurs sont légers, rapides et portables.
 
-**Avantages des conteneurs :**
+**Pourquoi utiliser Docker ?**
 - Isolation des applications
-- Portabilité (fonctionne partout où Docker est installé)
+- Portabilité (fonctionne partout)
 - Déploiement rapide
-- Consommation minimale de ressources
+- Ressources minimales
 
 ## Installation de Docker
 
-Sur Debian/Ubuntu :
+### Sur Debian/Ubuntu
 ```bash
 sudo apt update
-sudo apt install -y docker.io
+sudo apt install -y docker.io docker-compose
 sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-Vérifier l'installation :
+### Vérifier l'installation
 ```bash
 docker --version
+docker-compose --version
 docker run hello-world
 ```
 
-## Commandes de base Docker
+## Concepts fondamentaux
 
-### 1. pulling une image
+### Images vs Conteneurs
+- **Image** : Modèle en lecture seule (template)
+- **Conteneur** : Instance en ejecución d'une image
 
-Télécharger une image depuis Docker Hub :
+### Docker Hub
+Registre public contenant des milliers d'images prédéfinies.
+
+## Commandes de base
+
+### Gestion des images
 ```bash
+# Télécharger une image
 docker pull nginx
-docker pull ubuntu:latest
+docker pull ubuntu:22.04
 docker pull python:3.11
-```
 
-### 2. Lister les images
-
-```bash
+# Lister les images locales
 docker images
+docker images -a
+
+# Supprimer une image
+docker rmi nginx
+docker rmi -f nginx
 ```
 
-### 3. Lancer un conteneur
-
-Lancer un conteneur en mode interactif :
+### Lancer des conteneurs
 ```bash
+# Mode interactif
 docker run -it ubuntu /bin/bash
-```
 
-Lancer un conteneur en arrière-plan (détaché) :
-```bash
+# Mode détaché (arrière-plan)
 docker run -d --name mon_nginx -p 8080:80 nginx
+
+# Avec variables d'environnement
+docker run -d --name ma_db -e MYSQL_ROOT_PASSWORD=mdp123 mysql
+
+# Avec volume persisté
+docker run -d -v /data:/app --name mon_app ubuntu
+
+# Avec restart automatique
+docker run -d --restart=always --name nginx nginx
 ```
 
-Options utiles :
-- `-d` : mode détaché (arrière-plan)
-- `-p` : mapper les ports (port_hote:port_conteneur)
-- `--name` : donner un nom au conteneur
-- `-v` : monter un volume
-- `-e` : définir des variables d'environnement
+### Options courantes
+| Option | Description |
+|--------|-------------|
+| `-d` | Mode détaché |
+| `-p` | Mapping de ports (hôte:conteneur) |
+| `--name` | Nom du conteneur |
+| `-v` | Volume |
+| `-e` | Variable d'environnement |
+| `--restart` | Politique de redémarrage |
+| `--network` | Réseau Docker |
 
-### 4. Lister les conteneurs
-
+### Gestion des conteneurs
 ```bash
-docker ps           # conteneurs actifs
-docker ps -a        # tous les conteneurs
-```
+# Lister les conteneurs
+docker ps              # actifs
+docker ps -a          # tous
+docker ps -q          # juste les IDs
 
-### 5. Arrêter et démarrer un conteneur
-
-```bash
+# Arrêter/démarrer
 docker stop mon_nginx
 docker start mon_nginx
 docker restart mon_nginx
-```
 
-### 6. Supprimer un conteneur
-
-```bash
+# Supprimer
 docker rm mon_nginx
-docker rm -f mon_nginx  # forcer la suppression
-```
+docker rm -f mon_nginx   # forcer
 
-### 7. Voir les logs
-
-```bash
+# Voir les logs
 docker logs mon_nginx
-docker logs -f mon_nginx  # suivre les logs en temps réel
-```
+docker logs -f mon_nginx     # temps réel
+docker logs --tail 100 mon_nginx
 
-### 8. Exécuter une commande dans un conteneur
-
-```bash
+# Exécuter une commande
 docker exec -it mon_nginx bash
 docker exec mon_nginx cat /etc/hostname
+
+# Inspecter un conteneur
+docker inspect mon_nginx
+docker stats mon_nginx   # ressources en temps réel
 ```
 
-## Créer sa propre image avec un Dockerfile
+## Créer une image personnalisée
 
-Un Dockerfile est un script qui définit comment construire une image.
+### Le Dockerfile
 
 ```dockerfile
-# Utiliser une image de base
+# Commentaire
 FROM ubuntu:22.04
 
-# Mettre à jour et installer des paquets
+# Mise à jour et installation
 RUN apt update && apt install -y python3 python3-pip
 
-# Définir le répertoire de travail
+# Variable d'environnement
+ENV APP_ENV=production
+
+# Répertoire de travail
 WORKDIR /app
 
 # Copier les fichiers
+COPY requirements.txt .
 COPY . .
-
-# Installer les dépendances
-RUN pip3 install -r requirements.txt
 
 # Exposer un port
 EXPOSE 5000
 
-# Commande à exécuter
+# Commande par défaut
 CMD ["python3", "app.py"]
 ```
 
-Pour construire l'image :
+### Instructions courantes du Dockerfile
+| Instruction | Description |
+|-------------|-------------|
+| FROM | Image de base |
+| RUN | Commande à exécuter |
+| COPY | Copier des fichiers |
+| WORKDIR | Répertoire de travail |
+| ENV | Variable d'environnement |
+| EXPOSE | Port à exposer |
+| CMD | Commande par défaut |
+| ENTRYPOINT | Point d'entrée |
+
+### Construire et utiliser son image
 ```bash
+# Construire l'image
 docker build -t mon_app:latest .
+
+# Vérifier
+docker images | grep mon_app
+
+# Lancer
+docker run -d -p 5000:5000 --name mon_app mon_app:latest
 ```
 
-## Gestion des volumes
+## Les volumes
 
-Les volumes permettent de persister les données hors du conteneur.
+### Types de volumes
 
+1. **Volumes nommés**
 ```bash
-# Créer un volume
 docker volume create mes_donnees
+docker run -d -v mes_donnees:/data --name app ubuntu
+```
 
-# Monter un volume
-docker run -d -v mes_donnees:/data --name ma_app ubuntu
+2. **Bind mounts (répertoire hôte)**
+```bash
+docker run -d -v ~/mon_repertoire:/app --name app ubuntu
+```
 
-# Utiliser un volume existant
-docker run -d -v /chemin/local:/chemin/conteneur --name app ubuntu
+3. **tmpfs (en mémoire)**
+```bash
+docker run -d --tmpfs /tmp --name app ubuntu
+```
+
+### Gestion des volumes
+```bash
+# Lister
+docker volume ls
+
+# Inspecter
+docker volume inspect mon_volume
+
+# Supprimer
+docker volume rm mon_volume
+docker volume prune  # nettoyer les volumes inutilisés
 ```
 
 ## Réseau Docker
 
-Lister les réseaux :
+### Créer un réseau
 ```bash
+# Lister les réseaux
 docker network ls
-```
 
-Créer un réseau personnalisé :
-```bash
+# Créer un réseau personnalisé
 docker network create mon_reseau
+
+# Créer avec driver spécifique
+docker network create --driver bridge mon_reseau
 ```
 
-Connecter des conteneurs au même réseau pour qu'ils communiquent :
+### Connecter des conteneurs
 ```bash
-docker run -d --name service1 --network mon_reseau nginx
-docker run -d --name service2 --network mon_reseau ubuntu
+# Lancer sur un réseau
+docker run -d --network mon_reseau --name web nginx
+docker run -d --network mon_reseau --name db mysql
+
+# Les conteneurs peuvent maintenant se contacter par nom
 ```
 
-## Exercice pratique
+### DNS automatique
+Les conteneurs sur le même réseau peuvent se trouver par leur nom.
 
-### Objectif : Créer un mini serveur web avec Docker
+## Docker Compose
 
-1. **Créer un répertoire de travail :**
+Docker Compose permet de définir et exécuter des applications multi-conteneurs.
+
+### Le fichier docker-compose.yml
+```yaml
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+    depends_on:
+      - api
+    networks:
+      - frontend
+      - backend
+
+  api:
+    build: ./api
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=mdp123
+      - POSTGRES_DB=mondb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db_data:
+```
+
+### Commandes Docker Compose
 ```bash
-mkdir ~/mon_site && cd ~/mon_site
+# Lancer tous les services
+docker-compose up
+docker-compose up -d          # détaché
+
+# Arrêter
+docker-compose down
+docker-compose down -v         # supprimer aussi les volumes
+
+# Logs
+docker-compose logs -f
+docker-compose logs -f web     # service spécifique
+
+# Statut
+docker-compose ps
+docker-compose top
+
+# Reconstruire
+docker-compose build
+docker-compose up --build
 ```
 
-2. **Créer un fichier index.html :**
-```html
-<!DOCTYPE html>
-<html>
-<head><title>Mon Site Docker</title></head>
-<body>
-    <h1>Bienvenue sur mon conteneur !</h1>
-    <p>Ce site tourne dans un conteneur Docker.</p>
-</body>
-</html>
-```
+## Cas d'usage pratiques
 
-3. **Lancer un conteneur Nginx avec notre site :**
+### 1. Serveur web Nginx
 ```bash
-docker run -d -p 8888:80 -v ~/mon_site:/usr/share/nginx/html --name mon_site nginx
+docker run -d -p 80:80 --name nginx nginx:alpine
 ```
 
-4. **Vérifier que le site fonctionne :**
-- Ouvrir un navigateur et aller à `http://localhost:8888`
-- Ou utiliser `curl http://localhost:8888`
-
-5. **Explorer le conteneur :**
+### 2. Base de données PostgreSQL
 ```bash
-docker exec -it mon_site ls /usr/share/nginx/html
+docker run -d \
+  --name postgres \
+  -e POSTGRES_PASSWORD=mdp123 \
+  -e POSTGRES_DB=mondb \
+  -v pgdata:/var/lib/postgresql/data \
+  postgres:15
 ```
 
-6. **Nettoyer :**
+### 3. Serveur de développement Python
 ```bash
-docker stop mon_site
-docker rm mon_site
+docker run -it -p 5000:5000 -v $(pwd):/app python:3.11 sh -c "pip install flask && cd /app && flask run --host=0.0.0.0"
 ```
 
-## Résumé
+### 4. Monitoring avec Prometheus
+```bash
+docker run -d -p 9090:9090 --name prometheus prom/prometheus
+```
 
-| Commande | Description |
-|----------|-------------|
-| `docker pull <image>` | Télécharger une image |
-| `docker run <options> <image>` | Lancer un conteneur |
+## Bonnes pratiques
+
+### Sécurité
+```bash
+# Ne pas exécuter en root
+USER nobody
+
+# Scanner les vulnérabilités
+docker scan mon_image
+
+# Utiliser des images officielles
+docker pull nginx:latest
+```
+
+### Optimisation
+```bash
+# Combiner les couches RUN
+RUN apt update && apt install -y package1 package2 && rm -rf /var/lib/apt/lists/*
+
+# Utiliser des images légères
+docker pull alpine
+docker pull nginx:alpine
+
+# Nettoyer les caches
+docker builder prune
+```
+
+### Utiliser .dockerignore
+```
+.git
+node_modules
+__pycache__
+*.log
+.env
+```
+
+## Dépannage
+
+```bash
+# Voir tous les conteneurs (même arrêtés)
+docker ps -a
+
+# Logs en temps réel
+docker logs -f --tail 50 conteneur
+
+# Ressources utilisées
+docker stats
+
+# Entrer dans le conteneur
+docker exec -it conteneur bash
+
+# Inspecter la configuration
+docker inspect conteneur
+
+# Voir les processus
+docker top conteneur
+
+# Redémarrer un conteneur planté
+docker restart conteneur
+
+# Nettoyer tout
+docker system prune -a
+```
+
+## Résumé des commandes
+
+| Commande | Action |
+|----------|--------|
+| `docker pull image` | Télécharger une image |
+| `docker run -d -p 80:80 --name nom image` | Lancer un conteneur |
 | `docker ps` | Lister les conteneurs actifs |
-| `docker stop <nom>` | Arrêter un conteneur |
-| `docker rm <nom>` | Supprimer un conteneur |
-| `docker exec -it <nom> bash` | Ouvrir un terminal dans le conteneur |
-| `docker logs <nom>` | Voir les logs |
-| `docker build -t <nom> .` | Construire une image depuis un Dockerfile |
+| `docker stop nom` | Arrêter |
+| `docker rm nom` | Supprimer |
+| `docker exec -it nom bash` | Terminal dans le conteneur |
+| `docker logs -f nom` | Voir les logs |
+| `docker build -t nom .` | Construire une image |
+| `docker-compose up -d` | Lancer une application |
+| `docker volume create nom` | Créer un volume |
+| `docker network create nom` | Créer un réseau |
 
-Les conteneurs Docker facilitent le déploiement et la gestion des applications. Ils sont devenus un outil essentiel pour les développeurs et administrateurs système modernes.
+## Aller plus loin
+
+- Docker Swarm pour l'orchestration
+- Kubernetes pour la production
+- Portainer pour une interface graphique
+- GitLab CI/CD pour l'intégration continue
+
