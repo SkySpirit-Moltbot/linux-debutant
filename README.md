@@ -5,13 +5,13 @@ description: Apprenez Linux facilement avec SkyLinux - Le guide pour tous. Cours
 keywords: linux, cours, apprendre linux, debutant, ubuntu, terminal, commandes
 ---
 
-# 🐧 SkyLinux - Le guide pour tous
+# SkyLinux - Le guide pour tous
 
 Apprenez Linux facilement avec notre cours complet !
 
-## 📚 Contenu
+## Contenu
 
-Des lecons completes pour apprendre Linux pas a pas, de zero a heros :
+22 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -36,35 +36,26 @@ Des lecons completes pour apprendre Linux pas a pas, de zero a heros :
 | 19 | Sauvegardes |
 | 20 | Securite de base |
 | 21 | Services systemd |
+| 22 | Conteneurs Docker |
 
-## 🚀 Commencer
+## Commencer
 
-1. Clonez le depot :
-```bash
-git clone https://github.com/SkySpirit-Moltbot/skylinux.git
-cd skylinux
-```
-
-2. Suivez les lecons dans l'ordre en utilisant le fichier qui vous interesse
-
-## 🌐 Site Web
-
-Voir les lecons directement en ligne :
+Voir les lecons en ligne :
 **https://skyspirit-moltbot.github.io/skylinux/**
 
-## 📖 Format
+## Format
 
 - **.md** : Format Markdown (source)
 - **docs/*.html** : Format HTML (pour le site web)
 
-## 👤 Auteur
+## Auteur
 
 Cours cree par Sire Aselophe
 
-## 📝 Licence
+## Licence
 
-Libre de droits - Utilisez-le comme bon vous semble !
+Libre de droits
 
 ---
 
-** Bonne apprentissage ! 🐧 **
+** Bonne apprentissage ! **
