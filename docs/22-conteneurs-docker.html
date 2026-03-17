@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conteneurs Docker - SkyLinux</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/22-conteneurs-docker.html">
+<meta property="og:title" content="Conteneurs Docker - SkyLinux">
+<meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
+<meta name="description" content="Conteneurs Docker - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, Conteneurs Docker, debutant, ubuntu">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+h1 { font-size: 1.8rem; background: linear-gradient(135deg, #00d9ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+h2 { color: #00d9ff; margin: 20px 0 10px; }
+p { line-height: 1.7; margin: 10px 0; color: #bbb; }
+code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+pre { background: #111118; padding: 15px; border-radius: 8px; overflow-x: auto; margin: 15px 0; }
+a { color: #00d9ff; }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+th, td { border: 1px solid #333; padding: 8px; }
+th { background: rgba(0,217,255,0.1); }
+nav { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+</style>
+</head>
+<body>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;margin-bottom:20px;border-bottom:1px solid #333;">
+<a href="index.html" style="color:#666;text-decoration:none;">&larr; Sommaire</a>
+<span style="font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#00d9ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">SkyLinux</span>
+</div>
+<div class="container">
+<h1>Leçon 22 : Introduction aux conteneurs Docker</h1>
+<h2>Qu'est-ce qu'un conteneur ?</h2>
+<p>Un conteneur est une méthode légère pour empaqueter une application avec toutes ses dépendances. Contrairement aux machines virtuelles, les conteneurs partagent le noyau du système hôte, ce qui les rend beaucoup plus rapides et moins gourmands en ressources.</p>
+<p><strong>Avantages des conteneurs :</strong>
+- Isolation des applications
+- Portabilité (fonctionne partout où Docker est installé)
+- Déploiement rapide
+- Consommation minimale de ressources</p>
+<h2>Installation de Docker</h2>
+<p>Sur Debian/Ubuntu :</p>
+<pre class="codehilite"><code class="language-bash">sudo apt update
+sudo apt install -y docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+</code></pre>
+
+<p>Vérifier l'installation :</p>
+<pre class="codehilite"><code class="language-bash">docker --version
+docker run hello-world
+</code></pre>
+
+<h2>Commandes de base Docker</h2>
+<h3>1. pulling une image</h3>
+<p>Télécharger une image depuis Docker Hub :</p>
+<pre class="codehilite"><code class="language-bash">docker pull nginx
+docker pull ubuntu:latest
+docker pull python:3.11
+</code></pre>
+
+<h3>2. Lister les images</h3>
+<pre class="codehilite"><code class="language-bash">docker images
+</code></pre>
+
+<h3>3. Lancer un conteneur</h3>
+<p>Lancer un conteneur en mode interactif :</p>
+<pre class="codehilite"><code class="language-bash">docker run -it ubuntu /bin/bash
+</code></pre>
+
+<p>Lancer un conteneur en arrière-plan (détaché) :</p>
+<pre class="codehilite"><code class="language-bash">docker run -d --name mon_nginx -p 8080:80 nginx
+</code></pre>
+
+<p>Options utiles :
+- <code>-d</code> : mode détaché (arrière-plan)
+- <code>-p</code> : mapper les ports (port_hote:port_conteneur)
+- <code>--name</code> : donner un nom au conteneur
+- <code>-v</code> : monter un volume
+- <code>-e</code> : définir des variables d'environnement</p>
+<h3>4. Lister les conteneurs</h3>
+<pre class="codehilite"><code class="language-bash">docker ps           # conteneurs actifs
+docker ps -a        # tous les conteneurs
+</code></pre>
+
+<h3>5. Arrêter et démarrer un conteneur</h3>
+<pre class="codehilite"><code class="language-bash">docker stop mon_nginx
+docker start mon_nginx
+docker restart mon_nginx
+</code></pre>
+
+<h3>6. Supprimer un conteneur</h3>
+<pre class="codehilite"><code class="language-bash">docker rm mon_nginx
+docker rm -f mon_nginx  # forcer la suppression
+</code></pre>
+
+<h3>7. Voir les logs</h3>
+<pre class="codehilite"><code class="language-bash">docker logs mon_nginx
+docker logs -f mon_nginx  # suivre les logs en temps réel
+</code></pre>
+
+<h3>8. Exécuter une commande dans un conteneur</h3>
+<pre class="codehilite"><code class="language-bash">docker exec -it mon_nginx bash
+docker exec mon_nginx cat /etc/hostname
+</code></pre>
+
+<h2>Créer sa propre image avec un Dockerfile</h2>
+<p>Un Dockerfile est un script qui définit comment construire une image.</p>
+<pre class="codehilite"><code class="language-dockerfile"># Utiliser une image de base
+FROM ubuntu:22.04
+
+# Mettre à jour et installer des paquets
+RUN apt update &amp;&amp; apt install -y python3 python3-pip
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers
+COPY . .
+
+# Installer les dépendances
+RUN pip3 install -r requirements.txt
+
+# Exposer un port
+EXPOSE 5000
+
+# Commande à exécuter
+CMD [&quot;python3&quot;, &quot;app.py&quot;]
+</code></pre>
+
+<p>Pour construire l'image :</p>
+<pre class="codehilite"><code class="language-bash">docker build -t mon_app:latest .
+</code></pre>
+
+<h2>Gestion des volumes</h2>
+<p>Les volumes permettent de persister les données hors du conteneur.</p>
+<pre class="codehilite"><code class="language-bash"># Créer un volume
+docker volume create mes_donnees
+
+# Monter un volume
+docker run -d -v mes_donnees:/data --name ma_app ubuntu
+
+# Utiliser un volume existant
+docker run -d -v /chemin/local:/chemin/conteneur --name app ubuntu
+</code></pre>
+
+<h2>Réseau Docker</h2>
+<p>Lister les réseaux :</p>
+<pre class="codehilite"><code class="language-bash">docker network ls
+</code></pre>
+
+<p>Créer un réseau personnalisé :</p>
+<pre class="codehilite"><code class="language-bash">docker network create mon_reseau
+</code></pre>
+
+<p>Connecter des conteneurs au même réseau pour qu'ils communiquent :</p>
+<pre class="codehilite"><code class="language-bash">docker run -d --name service1 --network mon_reseau nginx
+docker run -d --name service2 --network mon_reseau ubuntu
+</code></pre>
+
+<h2>Exercice pratique</h2>
+<h3>Objectif : Créer un mini serveur web avec Docker</h3>
+<ol>
+<li><strong>Créer un répertoire de travail :</strong></li>
+</ol>
+<pre class="codehilite"><code class="language-bash">mkdir ~/mon_site &amp;&amp; cd ~/mon_site
+</code></pre>
+
+<ol>
+<li><strong>Créer un fichier index.html :</strong></li>
+</ol>
+<pre class="codehilite"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Mon Site Docker&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bienvenue sur mon conteneur !&lt;/h1&gt;
+    &lt;p&gt;Ce site tourne dans un conteneur Docker.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<ol>
+<li><strong>Lancer un conteneur Nginx avec notre site :</strong></li>
+</ol>
+<pre class="codehilite"><code class="language-bash">docker run -d -p 8888:80 -v ~/mon_site:/usr/share/nginx/html --name mon_site nginx
+</code></pre>
+
+<ol>
+<li><strong>Vérifier que le site fonctionne :</strong></li>
+<li>Ouvrir un navigateur et aller à <code>http://localhost:8888</code></li>
+<li>
+<p>Ou utiliser <code>curl http://localhost:8888</code></p>
+</li>
+<li>
+<p><strong>Explorer le conteneur :</strong></p>
+</li>
+</ol>
+<pre class="codehilite"><code class="language-bash">docker exec -it mon_site ls /usr/share/nginx/html
+</code></pre>
+
+<ol>
+<li><strong>Nettoyer :</strong></li>
+</ol>
+<pre class="codehilite"><code class="language-bash">docker stop mon_site
+docker rm mon_site
+</code></pre>
+
+<h2>Résumé</h2>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker pull &lt;image&gt;</code></td>
+<td>Télécharger une image</td>
+</tr>
+<tr>
+<td><code>docker run &lt;options&gt; &lt;image&gt;</code></td>
+<td>Lancer un conteneur</td>
+</tr>
+<tr>
+<td><code>docker ps</code></td>
+<td>Lister les conteneurs actifs</td>
+</tr>
+<tr>
+<td><code>docker stop &lt;nom&gt;</code></td>
+<td>Arrêter un conteneur</td>
+</tr>
+<tr>
+<td><code>docker rm &lt;nom&gt;</code></td>
+<td>Supprimer un conteneur</td>
+</tr>
+<tr>
+<td><code>docker exec -it &lt;nom&gt; bash</code></td>
+<td>Ouvrir un terminal dans le conteneur</td>
+</tr>
+<tr>
+<td><code>docker logs &lt;nom&gt;</code></td>
+<td>Voir les logs</td>
+</tr>
+<tr>
+<td><code>docker build -t &lt;nom&gt; .</code></td>
+<td>Construire une image depuis un Dockerfile</td>
+</tr>
+</tbody>
+</table>
+<p>Les conteneurs Docker facilitent le déploiement et la gestion des applications. Ils sont devenus un outil essentiel pour les développeurs et administrateurs système modernes.</p>
+
+<nav>
+<a href="21-services-systemd.html">&larr; Services Systemd</a>
+<span></span>
+</nav>
+</div>
+</body>
+</html>
