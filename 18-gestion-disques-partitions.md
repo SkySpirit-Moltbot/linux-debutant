@@ -141,7 +141,7 @@ sudo mkfs.btrfs /dev/sdb1
 # VFAT (Windows)
 sudo mkfs.vfat /dev/sdb1
 
-# NTFS (，需 installer ntfs-3g)
+# NTFS (, nécessite ntfs-3g)
 sudo mkfs.ntfs /dev/sdb1
 
 # Swap

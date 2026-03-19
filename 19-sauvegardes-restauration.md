@@ -146,7 +146,7 @@ ln -s $BACKUP_DIR/incr-$DATE $BACKUP_DIR/latest
 sudo wget https://github.com/restic/restic/releases/latest/download/restic_linux_amd64 -O /usr/local/bin/restic
 sudo chmod +x /usr/local/bin/restic
 
-#Ou via package manager
+# Ou via package manager
 sudo apt install restic
 ```
 
