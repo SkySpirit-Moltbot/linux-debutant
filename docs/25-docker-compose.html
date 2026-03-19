@@ -91,7 +91,7 @@ nav { display: flex; justify-content: space-between; margin-top: 30px; padding-t
 <div class="container">
 <h1>25 - docker compose : Docker Compose et orchestration de containers</h1>
 <h2>Introduction</h2>
-<p>Docker Compose est un outil qui permet de definir et gerer des applications multi-containers. Au lieu de lancer chaque container separement avec des commandes longues, vous decrivez toute votre stack dans un fichier YAML et vous lancez tout avec une seule commande.</p>
+<p>Docker Compose est un outil qui permet de définir et gérer des applications multi-containers. Au lieu de lancer chaque container séparément avec des commandes longues, vous décrivez toute votre stack dans un fichier YAML et vous lancez tout avec une seule commande.</p>
 <h2>Installation de Docker Compose</h2>
 <h3>Via apt (Debian/Ubuntu)</h3>
 <div class="code-block">
@@ -101,7 +101,7 @@ nav { display: flex; justify-content: space-between; margin-top: 30px; padding-t
 sudo apt update
 sudo apt install docker-compose
 
-# Verifier la version
+# Vérifier la version
 docker-compose --version</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
@@ -203,7 +203,7 @@ volumes:
   </div>
 </div>
 <h2>Commandes de base</h2>
-<h3>Lancer et arreter</h3>
+<h3>Lancer et arrêter</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
@@ -238,7 +238,7 @@ docker-compose logs
 docker-compose logs -f
 docker-compose logs -f app
 
-# Executer une commande dans un service
+# Exécuter une commande dans un service
 docker-compose exec app ls -la
 docker-compose exec db psql -U user -d madb
 
@@ -253,13 +253,13 @@ docker-compose top</code>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Redemarrer un service
+    <code># Redémarrer un service
 docker-compose restart app
 
 # Recrer un service
 docker-compose recreate app
 
-# Mettre a l'echelle un service (swarm mode requis)
+# Mettre a l'échelle un service (swarm mode requis)
 docker-compose up -d --scale app=3
 
 # Pause / Unpause
@@ -272,7 +272,7 @@ docker-compose unpause</code>
 </div>
 <h2>Variables d'environnement</h2>
 <h3>Fichier .env</h3>
-<p>Creez un fichier .env a la racine du projet :</p>
+<p>Créez un fichier .env à la racine du projet :</p>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
@@ -470,7 +470,7 @@ docker-compose build --no-cache</code>
     <code># Utiliser un fichier specifique
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-# Fichier de developpement
+# Fichier de développement
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
@@ -566,25 +566,25 @@ volumes:
 <table>
 <tr><th>Commande</th><th>Utilite</th></tr>
 <tr><td><code>docker-compose up -d</code></td><td>Lancer les services en arriere-plan</td></tr>
-<tr><td><code>docker-compose down</code></td><td>Arreter les services</td></tr>
+<tr><td><code>docker-compose down</code></td><td>Arrêter les services</td></tr>
 <tr><td><code>docker-compose ps</code></td><td>Voir le statut des services</td></tr>
 <tr><td><code>docker-compose logs -f</code></td><td>Voir les logs en temps reel</td></tr>
-<tr><td><code>docker-compose exec service cmd</code></td><td>Executer une commande</td></tr>
+<tr><td><code>docker-compose exec service cmd</code></td><td>Exécuter une commande</td></tr>
 <tr><td><code>docker-compose build</code></td><td>Construire les images</td></tr>
-<tr><td><code>docker-compose restart service</code></td><td>Redemarrer un service</td></tr>
+<tr><td><code>docker-compose restart service</code></td><td>Redémarrer un service</td></tr>
 <tr><td><code>docker-compose -f file.yml up</code></td><td>Utiliser un fichier specifique</td></tr>
 </table>
 <h2>Exercice pratique</h2>
 <ol>
-<li>Creez un fichier docker-compose.yml avec un serveur web Nginx et une application Node.js</li>
+<li>Créez un fichier docker-compose.yml avec un serveur web Nginx et une application Node.js</li>
 <li>Configurez un volume partage entre les deux services</li>
 <li>Ajoutez un healthcheck sur l'application</li>
 <li>Testez les commandes up, down, logs et exec</li>
-<li>Creez un fichier .env et utilisez des variables d'environnement</li>
+<li>Créez un fichier .env et utilisez des variables d'environnement</li>
 <li>Experimentez avec plusieurs fichiers compose et l'option -f</li>
 </ol>
 <h2>Conclusion</h2>
-<p>Docker Compose simplifie considerablement la gestion des applications multi-containers. Au lieu de lancer des commandes complexes, vous decrivez votre infrastructure dans un fichier YAML versionnable. C'est indispensable pour le developpement local et tres utile pour les deploiements de petite ou moyenne echelle.</p>
+<p>Docker Compose simplifie considérablement la gestion des applications multi-containers. Au lieu de lancer des commandes complexes, vous décrivez votre infrastructure dans un fichier YAML versionnable. C'est indispensable pour le développement local et très utile pour les déploiements de petite ou moyenne échelle.</p>
 <nav>
 <a href="24-reseaux-avances.html" style="color:#00d9ff;text-decoration:none;">&larr; 24 - Reseaux avances</a> | <span style="color:#666;">25</span> | <span style="color:#666;">Fin</span>
 </nav>
