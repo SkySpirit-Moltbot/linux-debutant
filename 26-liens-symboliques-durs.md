@@ -14,7 +14,7 @@ Il existe deux types de liens :
 |------|---------------------|----------------------------------------|
 | **Concept** | Un autre nom pour le même fichier | Un raccourci / pointeur vers un autre fichier |
 | **Inode** | Même inode | Inode différent |
-| **跨-filesystem** | ❌ Non | ✅ Oui |
+| **Cross-filesystem** | ❌ Non | ✅ Oui |
 | **Vers répertoire** | ❌ Non | ✅ Oui |
 | **Vers fichier supprimé** | Continue de fonctionner | Devient cassé (lien mort) |
 
@@ -41,7 +41,7 @@ ln /home/david/rapport.txt /home/david/Documents/rapport_lien.txt
 ls -li fichier_original lien_nouveau
 ```
 
-Le `-i` affiche le numéro d'inode. Vous verrez que les deux fichiers ont le **même inode**.
+Le `-i` affiche le numéro d'inode. Tu verras que les deux fichiers ont le **même inode**.
 
 ```bash
 $ ls -li rapport.txt Documents/rapport_lien.txt
@@ -107,21 +107,21 @@ find . -type l -xtype l
 rm lien_symbolique
 ```
 
-> ⚠️ Pas de `/` à la fin du nom ! Sinon vous pourriez supprimer la **cible** par erreur.
+> ⚠️ Pas de `/` à la fin du nom ! Sinon tu pourrais supprimer la **cible** par erreur.
 
 ## Quand utiliser quoi ?
 
 ### Utilisez le lien symbolique quand :
-- Vous voulez créer un **raccourci** vers un fichier ou répertoire
+- Tu veux créer un **raccourci** vers un fichier ou répertoire
 - La cible peut se trouver sur un **autre système de fichiers**
-- Vous voulez liaison vers un **répertoire**
+- Tu veux créer une liaison vers un **répertoire**
 - La cible peut être modifiée ou supprimée (un lien mort est visible)
 
 ### Utilisez le lien dur quand :
-- Vous voulez une **copie de sécurité intégrée** d'un fichier
+- Tu veux une **copie de sécurité intégrée** d'un fichier
 - Les deux fichiers doivent **toujours** pointer vers le même contenu
-- Vous travaillez sur un **même système de fichiers**
-- Vous voulez que le fichier persiste même si l'original est renommé/supprimé (tant qu'un lien reste)
+- Tu travailles sur un **même système de fichiers**
+- Tu veux que le fichier persiste même si l'original est renommé/supprimé (tant qu'un lien reste)
 
 ### Exemple concret : la configuration système
 
