@@ -12,6 +12,8 @@ Un **multiplexeur de terminal** comme **tmux** te permet de :
 Sans tmux : si ta connexion SSH coupe, ton travail est perdu.
 Avec tmux : tu te rattaches et tout est intact !
 
+> **Note :** Si tu utilises **screen** à la place de tmux, le principe est le même. tmux est juste plus moderne et mieux maintenu.
+
 ## Concepts de base
 
 | Concept | Description |
@@ -301,8 +303,7 @@ chmod +x start-work.sh
 - Utilise `Ctrl+b` comme préfixe, puis la commande
 - Crée plusieurs **fenêtres** (onglets) et **panneaux** (splits)
 - Personnalise avec `~/.tmux.conf`
--战友 (**战友** = "camarade de combat" en chinois - utile quand tu bosses en remote avec des collegues !)
 
 ---
 
-*Retour au menu : [README.md](../README.md)*
+&larr; [26 - Liens symboliques et liens durs](26-liens-symboliques-durs.html) &nbsp;|&nbsp; <span style="color:#666;">Fin</span>
