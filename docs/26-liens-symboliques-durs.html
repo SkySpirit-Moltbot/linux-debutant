@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leçon 26 : Liens symboliques et liens durs - SkyLinux</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/26-liens-symboliques-durs.html">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/26-liens-symboliques-et-liens-durs.html">
 <meta property="og:title" content="Leçon 26 : Liens symboliques et liens durs - SkyLinux">
 <meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
 <meta name="description" content="Leçon 26 : Liens symboliques et liens durs - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
@@ -16,8 +16,6 @@ body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; mi
 .container { max-width: 800px; margin: 0 auto; }
 h1 { font-size: 1.8rem; background: linear-gradient(135deg, #00d9ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
 h2 { color: #00d9ff; margin: 20px 0 10px; }
-h3 { color: #c084fc; margin: 15px 0 8px; }
-h4 { color: #e879f9; margin: 10px 0 5px; }
 p { line-height: 1.7; margin: 10px 0; color: #bbb; }
 code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
 table { width: 100%; border-collapse: collapse; margin: 15px 0; }
@@ -94,7 +92,7 @@ hr { border: none; border-top: 1px solid #333; margin: 20px 0; }
 }
 .copy-btn.copied svg { fill: #238636; }
 
-/* Inline code (dans le texte) */
+/* Inline code */
 p code, li code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
 </style>
 </head>
@@ -152,58 +150,128 @@ p code, li code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 
 <hr />
 <h2>2. Liens durs (hard links)</h2>
 <h3>ln - Créer un lien dur</h3>
-<pre><code class="language-bash">ln fichier_original lien_nouveau
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>ln fichier_original lien_nouveau</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p><strong>Exemple :</strong></p>
-<pre><code class="language-bash"># Créer un lien dur vers rapport.txt dans ~/Documents/
-ln /home/david/rapport.txt /home/david/Documents/rapport_lien.txt
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Créer un lien dur vers rapport.txt dans ~/Documents/
+ln /home/david/rapport.txt /home/david/Documents/rapport_lien.txt</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <blockquote>
 <p>⚠️ Les deux noms pointent vers le <strong>même contenu</strong>. Modifier l'un modifie l'autre.</p>
 </blockquote>
 <h3>ls - Vérifier l'inode commun</h3>
-<pre><code class="language-bash">ls -li fichier_original lien_nouveau
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>ls -li fichier_original lien_nouveau</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p>Le <code>-i</code> affiche le numéro d'inode. Tu verras que les deux fichiers ont le <strong>même inode</strong>.</p>
-<pre><code class="language-bash">$ ls -li rapport.txt Documents/rapport_lien.txt
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>$ ls -li rapport.txt Documents/rapport_lien.txt
 1234567 -rw-r--r-- 2 david david 4096 jan 15 10:00 rapport.txt
-1234567 -rw-r--r-- 2 david david 4096 jan 15 10:00 Documents/rapport_lien.txt
-</code></pre>
+1234567 -rw-r--r-- 2 david david 4096 jan 15 10:00 Documents/rapport_lien.txt</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p>Le chiffre <code>2</code> (deuxième colonne) est le <strong>nombre de liens durs</strong> vers cet inode. Tant qu'au moins un lien existe, le fichier n'est pas supprimé physiquement.</p>
 <h3>rm - Supprimer un lien dur</h3>
-<pre><code class="language-bash">rm lien_nouveau
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>rm lien_nouveau</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p>Le fichier original reste intact. Les données ne sont vraiment effacées du disque que quand le <strong>dernier lien dur</strong> est supprimé.</p>
 <hr />
 <h2>3. Liens symboliques (symlinks)</h2>
 <h3>ln -s - Créer un lien symbolique</h3>
-<pre><code class="language-bash">ln -s fichier_cible lien_symbolique
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>ln -s fichier_cible lien_symbolique</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p><strong>Exemple :</strong></p>
-<pre><code class="language-bash"># Créer un raccourci vers mes-documents dans le bureau
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Créer un raccourci vers mes-documents dans le bureau
 ln -s /home/david/mes-documents /home/david/Bureau/mes-documents
 
 # Créer un lien symbolique vers un script dans /usr/local/bin/
-sudo ln -s /opt/mon-script.sh /usr/local/bin/mon-script
-</code></pre>
+sudo ln -s /opt/mon-script.sh /usr/local/bin/mon-script</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <h3>ls - À quoi ça ressemble ?</h3>
-<pre><code class="language-bash">$ ls -la Bureau/
-lrwxrwxrwx 1 david david   20 jan 15 10:00 mes-documents -&gt; /home/david/mes-documents
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>$ ls -la Bureau/
+lrwxrwxrwx 1 david david   20 jan 15 10:00 mes-documents -&gt; /home/david/mes-documents</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <ul>
 <li><code>l</code> au début = c'est un lien symbolique</li>
 <li>La flèche <code>-&gt;</code> montre vers quoi le lien pointe</li>
 </ul>
 <h3>test - Vérifier si un lien symbolique est cassé</h3>
-<pre><code class="language-bash"># Tester le lien
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Tester le lien
 test -e lien_symbolique &amp;&amp; echo &quot;OK&quot; || echo &quot;CASSÉ&quot;
 
 # Lister les liens cassés
-find . -type l -xtype l
-</code></pre>
+find . -type l -xtype l</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <h3>rm - Supprimer un lien symbolique</h3>
-<pre><code class="language-bash">rm lien_symbolique
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>rm lien_symbolique</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <blockquote>
 <p>⚠️ Pas de <code>/</code> à la fin du nom ! Sinon tu pourrais supprimer la <strong>cible</strong> par erreur.</p>
 </blockquote>
@@ -224,43 +292,81 @@ find . -type l -xtype l
 <li>Tu veux que le fichier persiste même si l'original est renommé ou supprimé (tant qu'un lien reste)</li>
 </ul>
 <h3>Exemple concret : la configuration système</h3>
-<pre><code class="language-bash"># Ubuntu lie python3 vers python pour la compatibilité
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Ubuntu lie python3 vers python pour la compatibilité
 $ ls -la /usr/bin/python
 lrwxrwxrwx 1 root root   7 jan 15 10:00 python -&gt; python3
 
 # Python3 est le vrai exécutable
 $ ls -la /usr/bin/python3
--rwxr-xr-x 1 root root 10480 jan 15 10:00 python3
-</code></pre>
+-rwxr-xr-x 1 root root 10480 jan 15 10:00 python3</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <hr />
 <h2>5. Exercices pratiques</h2>
 <h3>Exercice 1 : Créer un lien symbolique vers un script</h3>
 <ol>
 <li>Crée un fichier <code>test.sh</code> dans ton dossier personnel :</li>
 </ol>
-<pre><code class="language-bash">echo 'echo &quot;Bonjour depuis le script&quot;' &gt; ~/test.sh
-chmod +x ~/test.sh
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>echo 'echo &quot;Bonjour depuis le script&quot;' &gt; ~/test.sh
+chmod +x ~/test.sh</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <ol>
 <li>Crée un lien symbolique sur ton bureau :</li>
 </ol>
-<pre><code class="language-bash">ln -s ~/test.sh ~/Bureau/test_rapide.sh
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>ln -s ~/test.sh ~/Bureau/test_rapide.sh</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <ol>
 <li>Exécute le lien :</li>
 </ol>
-<pre><code class="language-bash">~/Bureau/test_rapide.sh
-</code></pre>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>~/Bureau/test_rapide.sh</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <p>✅ Tu devrais voir "Bonjour depuis le script"</p>
 <h3>Exercice 2 : Découvrir les liens dans /etc/</h3>
-<pre><code class="language-bash"># Les paramètres régionaux sont souvent des liens symboliques
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Les paramètres régionaux sont souvent des liens symboliques
 ls -la /etc/localtime
 
 # Trouver tous les symlinks dans /etc
-find /etc -type l -maxdepth 1 -ls
-</code></pre>
+find /etc -type l -maxdepth 1 -ls</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <h3>Exercice 3 : Comprendre les liens durs</h3>
-<pre><code class="language-bash"># Créer un fichier
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Créer un fichier
 echo &quot;Contenu important&quot; &gt; ~/important.txt
 
 # Créer un lien dur
@@ -273,10 +379,17 @@ ls -li ~/important.txt ~/backup_important.txt
 rm ~/important.txt
 
 # Vérifier que la copie fonctionne encore
-cat ~/backup_important.txt
-</code></pre>
+cat ~/backup_important.txt</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <h3>Exercice 4 : Identifier les liens cassés</h3>
-<pre><code class="language-bash"># Créer un lien symbolique vers un fichier
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Créer un lien symbolique vers un fichier
 echo &quot;test&quot; &gt; ~/fichier_test.txt
 ln -s ~/fichier_test.txt ~/lien_test
 
@@ -284,8 +397,12 @@ ln -s ~/fichier_test.txt ~/lien_test
 rm ~/fichier_test.txt
 
 # Vérifier que le lien est maintenant cassé
-test -e ~/lien_test &amp;&amp; echo &quot;OK&quot; || echo &quot;LIEN CASSÉ&quot;
-</code></pre>
+test -e ~/lien_test &amp;&amp; echo &quot;OK&quot; || echo &quot;LIEN CASSÉ&quot;</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
 <hr />
 <h2>6. Résumé</h2>
 <table>
@@ -337,9 +454,7 @@ function copyCode(el) {
   var code = el.querySelector('code');
   var btn = el.querySelector('.copy-btn');
   var progress = container.querySelector('progress');
-
   if (!code || !btn) return;
-
   var text = code.textContent;
   navigator.clipboard.writeText(text).then(function() {
     btn.classList.add('copied');
@@ -348,7 +463,6 @@ function copyCode(el) {
       btn.classList.remove('copied');
       btn.querySelector('svg').innerHTML = '<path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>';
     }, 2000);
-
     var val = 0;
     progress.value = 0;
     progress.classList.remove('loaded');
