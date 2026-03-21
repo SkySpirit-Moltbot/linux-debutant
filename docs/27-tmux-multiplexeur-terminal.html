@@ -6,16 +6,18 @@
 <title>Leçon 27 : tmux - Multiplexeur de Terminal - SkyLinux</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/27-tmux-multiplexeur-terminal.html">
-<meta property="og:title" content="Leçon 27 - SkyLinux">
+<meta property="og:title" content="Leçon 27 : tmux - Multiplexeur de Terminal - SkyLinux">
 <meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
-<meta name="description" content="Leçon 27 - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
-<meta name="keywords" content="linux, cours, tmux, terminal, multiplexer, debutant, ubuntu">
+<meta name="description" content="Leçon 27 : tmux - Multiplexeur de Terminal - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, leon 27  tmux  multiplexeur de terminal, debutant, ubuntu">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
 .container { max-width: 800px; margin: 0 auto; }
 h1 { font-size: 1.8rem; background: linear-gradient(135deg, #00d9ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
 h2 { color: #00d9ff; margin: 20px 0 10px; }
+h3 { color: #c084fc; margin: 15px 0 8px; }
+h4 { color: #e879f9; margin: 10px 0 5px; }
 p { line-height: 1.7; margin: 10px 0; color: #bbb; }
 code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
 table { width: 100%; border-collapse: collapse; margin: 15px 0; }
@@ -28,158 +30,230 @@ li code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; bor
 nav { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
 a { color: #00d9ff; text-decoration: none; }
 a:hover { text-decoration: underline; }
-.nav-disabled { color: #666; }
-pre { background: #111118; padding: 15px; border-radius: 8px; overflow-x: auto; margin: 15px 0; border: 1px solid #30363d; }
-pre code { background: none; color: #e0e0e0; padding: 0; }
+hr { border: none; border-top: 1px solid #333; margin: 20px 0; }
+
+/* === Code Block avec copie + progression === */
+.code-block {
+  background: #111118;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 15px 0;
+  border: 1px solid #30363d;
+}
+.code-block progress {
+  width: 100%;
+  height: 3px;
+  appearance: none;
+  border: none;
+  display: block;
+}
+.code-block progress::-webkit-progress-bar { background: #238636; }
+.code-block progress::-moz-progress-bar { background: #238636; }
+.code-block progress.loaded { background: #30363d; }
+
+.code-line {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+}
+.code-line:hover { background: rgba(255,255,255,0.04); }
+.code-line code {
+  background: none;
+  color: #e6edf3;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13.5px;
+  line-height: 1.5;
+  white-space: pre;
+  flex: 1;
+  overflow-x: auto;
+}
+.copy-btn {
+  margin-left: 12px;
+  background: none;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.5;
+  transition: opacity 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.copy-btn:hover { opacity: 1; border-color: #58a6ff; }
+.copy-btn.copied { border-color: #238636; opacity: 1; }
+.copy-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: #8b949e;
+  display: block;
+}
+.copy-btn.copied svg { fill: #238636; }
+
+/* Inline code (dans le texte) */
+p code, li code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
 </style>
 </head>
 <body>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;margin-bottom:20px;border-bottom:1px solid #333;">
+<a href="index.html" style="color:#666;text-decoration:none;">&larr; Sommaire</a>
+<span style="font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#00d9ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">SkyLinux</span>
+</div>
 <div class="container">
 <h1>Leçon 27 : tmux - Multiplexeur de Terminal</h1>
-
-    <h2 id="quest-ce-quun-multiplexeur-de-terminal">Qu'est-ce qu'un multiplexeur de terminal ?</h2>
-    <p>Un <strong>multiplexeur de terminal</strong> comme <strong>tmux</strong> te permet de :</p>
-    <ul>
-        <li><strong>Gérer plusieurs terminaux</strong> dans une seule fenêtre</li>
-        <li><strong>Détacher et rattacher</strong> des sessions à distance</li>
-        <li><strong>Partager des sessions</strong> entre utilisateurs</li>
-        <li><strong>Conserver tes sessions</strong> même si ta connexion coupe</li>
-    </ul>
-    <p>Sans tmux : si ta connexion SSH coupe, ton travail est perdu.<br>
-    Avec tmux : tu te rattaches et tout est intact !</p>
-
-    <h2 id="concepts-de-base">Concepts de base</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Concept</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Session</strong></td>
-                <td>Une session tmux est un environnement complet de terminaux</td>
-            </tr>
-            <tr>
-                <td><strong>Fenêtre (Window)</strong></td>
-                <td>Un onglet dans la session (comme les onglets d'un navigateur)</td>
-            </tr>
-            <tr>
-                <td><strong>Panneau (Pane)</strong></td>
-                <td>Une subdivision de la fenêtre (splits horizontaux/verticaux)</td>
-            </tr>
-        </tbody>
-    </table>
-    <pre><code>Session tmux
+<p>Dans cette leçon, tu vas maîtriser tmux, un multiplexeur de terminal qui te permet de gérer plusieurs terminaux dans une seule fenêtre, de détacher et rattacher des sessions à distance, et de conserver ton travail même si ta connexion coupe.</p>
+<hr />
+<h2>1. Qu'est-ce qu'un multiplexeur de terminal ?</h2>
+<p>Un <strong>multiplexeur de terminal</strong> comme <strong>tmux</strong> te permet de :</p>
+<ul>
+<li><strong>Gérer plusieurs terminaux</strong> dans une seule fenêtre</li>
+<li><strong>Détacher et rattacher</strong> des sessions à distance</li>
+<li><strong>Partager des sessions</strong> entre utilisateurs</li>
+<li><strong>Conserver tes sessions</strong> même si ta connexion coupe</li>
+</ul>
+<p>Sans tmux : si ta connexion SSH coupe, ton travail est perdu.
+Avec tmux : tu te rattaches et tout est intact !</p>
+<blockquote>
+<p><strong>Note :</strong> Si tu utilises <strong>screen</strong> à la place de tmux, le principe est le même. tmux est juste plus moderne et mieux maintenu.</p>
+</blockquote>
+<hr />
+<h2>2. Concepts de base</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Session</strong></td>
+<td>Une session tmux est un environnement complet de terminaux</td>
+</tr>
+<tr>
+<td><strong>Fenêtre (Window)</strong></td>
+<td>Un onglet dans la session (comme les onglets d'un navigateur)</td>
+</tr>
+<tr>
+<td><strong>Panneau (Pane)</strong></td>
+<td>Une subdivision de la fenêtre (splits horizontaux ou verticaux)</td>
+</tr>
+</tbody>
+</table>
+<pre><code>Session tmux
 ├── Fenêtre 1 (terminal)
 │   ├── Panneau gauche
 │   └── Panneau droit
 ├── Fenêtre 2 (logs)
-└── Fenêtre 3 (editor)</code></pre>
-
-    <h2 id="commandes-de-base">Commandes de base</h2>
-
-    <h3 id="demarrer-tmux">Démarrer tmux</h3>
-    <pre><code># Lancer une nouvelle session (nommee)
+└── Fenêtre 3 (editor)
+</code></pre>
+<hr />
+<h2>3. Commandes de base</h2>
+<h3>tmux - Démarrer tmux</h3>
+<pre><code class="language-bash"># Lancer une nouvelle session (nommee)
 tmux new -s ma_session
 
 # Lancer rapidement
-tmux</code></pre>
-
-    <h3 id="commandes-via-ctrlb">Commandes via Ctrl+b</h3>
-    <p>Le préfixe par défaut est <strong>Ctrl+b</strong>. Ensuite tu tapes la commande :</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Commande</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>Ctrl+b d</code></td>
-                <td>Détacher la session (laisser tourner en arrière-plan)</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b c</code></td>
-                <td>Créer une nouvelle fenêtre</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b ,</code></td>
-                <td>Renommer la fenêtre actuelle</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b %</code></td>
-                <td>Split vertical (gauche/droite)</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b "</code></td>
-                <td>Split horizontal (haut/bas)</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b o</code></td>
-                <td>Passer au panneau suivant</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b x</code></td>
-                <td>Fermer le panneau actuel</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b w</code></td>
-                <td>Lister les fenêtres</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b n</code></td>
-                <td>Fenêtre suivante</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b p</code></td>
-                <td>Fenêtre précédente</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b 0-9</code></td>
-                <td>Aller à la fenêtre numéro X</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b ?</code></td>
-                <td>Afficher toutes les touches</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h3 id="se-detacher-et-se-rattacher">Se détacher et se rattacher</h3>
-    <pre><code># Se detacher : Ctrl+b d
+tmux
+</code></pre>
+<h3>Commandes via Ctrl+b</h3>
+<p>Le préfixe par défaut est <strong>Ctrl+b</strong>. Ensuite tu tapes la commande :</p>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+b d</code></td>
+<td>Détacher la session (laisser tourner en arrière-plan)</td>
+</tr>
+<tr>
+<td><code>Ctrl+b c</code></td>
+<td>Créer une nouvelle fenêtre</td>
+</tr>
+<tr>
+<td><code>Ctrl+b ,</code></td>
+<td>Renommer la fenêtre actuelle</td>
+</tr>
+<tr>
+<td><code>Ctrl+b %</code></td>
+<td>Split vertical (gauche/droite)</td>
+</tr>
+<tr>
+<td><code>Ctrl+b "</code></td>
+<td>Split horizontal (haut/bas)</td>
+</tr>
+<tr>
+<td><code>Ctrl+b o</code></td>
+<td>Passer au panneau suivant</td>
+</tr>
+<tr>
+<td><code>Ctrl+b x</code></td>
+<td>Fermer le panneau actuel</td>
+</tr>
+<tr>
+<td><code>Ctrl+b w</code></td>
+<td>Lister les fenêtres</td>
+</tr>
+<tr>
+<td><code>Ctrl+b n</code></td>
+<td>Fenêtre suivante</td>
+</tr>
+<tr>
+<td><code>Ctrl+b p</code></td>
+<td>Fenêtre précédente</td>
+</tr>
+<tr>
+<td><code>Ctrl+b 0-9</code></td>
+<td>Aller à la fenêtre numéro X</td>
+</tr>
+<tr>
+<td><code>Ctrl+b ?</code></td>
+<td>Afficher toutes les touches</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Se détacher et se rattacher</h2>
+<h3>tmux ls - Lister les sessions actives</h3>
+<pre><code class="language-bash"># Se detacher : Ctrl+b d
 # La session continue en arriere-plan !
 
 # Lister les sessions actives
 tmux ls
-
-# Se rattacher a une session
+</code></pre>
+<h3>tmux attach - Se rattacher à une session</h3>
+<pre><code class="language-bash"># Se rattacher a une session
 tmux attach -t ma_session
 
 # Rattacher ou créer si elle n'existe pas
-tmux new -A -s ma_session</code></pre>
-
-    <h2 id="navigation-entre-panneaux">Navigation entre panneaux</h2>
-    <pre><code># Passer au panneau suivant
+tmux new -A -s ma_session
+</code></pre>
+<hr />
+<h2>5. Navigation entre panneaux</h2>
+<pre><code class="language-bash"># Passer au panneau suivant
 Ctrl+b o
 
-# Aller a un panneau précis (avec mouse enabled ou pas)
+# Aller a un panneau précis
 Ctrl+b ;
-
-# Utiliser la souris (si active)
-# Clic directement sur le panneau
 
 # Resize du panneau actif
 Ctrl+b Alt+flèche   # Redimensionner
 Ctrl+b : resize-pane -D  # Agrandir vers le bas
 Ctrl+b : resize-pane -U  # Agrandir vers le haut
 Ctrl+b : resize-pane -L  # Agrandir vers la gauche
-Ctrl+b : resize-pane -R  # Agrandir vers la droite</code></pre>
-
-    <h2 id="gestion-des-fenetres">Gestion des fenêtres</h2>
-    <pre><code># Renommer la fenêtre actuelle
+Ctrl+b : resize-pane -R  # Agrandir vers la droite
+</code></pre>
+<hr />
+<h2>6. Gestion des fenêtres</h2>
+<pre><code class="language-bash"># Renommer la fenêtre actuelle
 Ctrl+b ,
 
 # Lister les fenêtres
@@ -188,23 +262,25 @@ Ctrl+b w
 # Aller a la fenêtre 1
 Ctrl+b 1
 
-# Déplacer la fenêtre vers la gauche/droite
+# Déplacer la fenêtre vers la gauche ou la droite
 Ctrl+b : swap-window -t -1   # Échanger avec précédente
-Ctrl+b : swap-window -t +1   # Échanger avec suivante</code></pre>
-
-    <h2 id="commandes-utiles">Commandes utiles</h2>
-    <pre><code># Depuis le shell (hors tmux)
-tmux new-session -d -s nom_session 'commande'  # Créer avec commande auto
+Ctrl+b : swap-window -t +1   # Échanger avec suivante
+</code></pre>
+<hr />
+<h2>7. Commandes utiles</h2>
+<h3>Depuis le shell (hors tmux)</h3>
+<pre><code class="language-bash">tmux new-session -d -s nom_session 'commande'  # Créer avec commande auto
 tmux send-keys -t nom_session 'ls' Enter       # Envoyer une commande
 tmux kill-session -t nom_session               # Tuer une session
 tmux kill-server                               # Tuer tmux complètement
-
-# Depuis l'intérieur de tmux (: pour mode commande)
-:kill-session     # Tuer la session actuelle
-:kill-server      # Tuer toutes les sessions</code></pre>
-
-    <h2 id="personnalisation">Personnalisation avec ~/.tmux.conf</h2>
-    <pre><code># Exemple de configuration ~/.tmux.conf
+</code></pre>
+<h3>Depuis l'intérieur de tmux (: pour mode commande)</h3>
+<pre><code class="language-bash">:kill-session     # Tuer la session actuelle
+:kill-server      # Tuer toutes les sessions
+</code></pre>
+<hr />
+<h2>8. Personnalisation avec ~/.tmux.conf</h2>
+<pre><code class="language-bash"># Exemple de configuration ~/.tmux.conf
 # Activer la souris
 set -g mouse on
 
@@ -221,82 +297,95 @@ set -g base-index 1
 setw -g pane-base-index 1
 
 # Coller depuis le presse-papier systeme
-set -g default-command "reattach-to-user-namespace -l bash"</code></pre>
-    <p>Après modification :</p>
-    <pre><code>tmux source-file ~/.tmux.conf</code></pre>
-
-    <h2 id="scrolling-et-copie">Scrolling et copie de texte</h2>
-    <pre><code># Mode copie (scrollback)
+set -g default-command &quot;reattach-to-user-namespace -l bash&quot;
+</code></pre>
+<p>Après modification :</p>
+<pre><code class="language-bash">tmux source-file ~/.tmux.conf
+</code></pre>
+<hr />
+<h2>9. Scrolling et copie de texte</h2>
+<pre><code class="language-bash"># Mode copie (scrollback)
 Ctrl+b [
 
 # Naviguer avec flèches / PgUp/PgDown
 # Chercher avec / (comme dans less)
-# Quitter avec q</code></pre>
-    <p>Pour copier :</p>
-    <ol>
-        <li><code>Ctrl+b [</code> pour entrer en mode copie</li>
-        <li><code>space</code> pour commencer la sélection</li>
-        <li>Déplacer avec les flèches</li>
-        <li><code>enter</code> pour copier</li>
-        <li><code>Ctrl+b ]</code> pour coller</li>
-    </ol>
-
-    <h2 id="scripts-et-automatisation">Scripts et automatisation</h2>
-    <pre><code>#!/bin/bash
+# Quitter avec q
+</code></pre>
+<p>Pour copier :</p>
+<ol>
+<li><code>Ctrl+b [</code> pour entrer en mode copie</li>
+<li><code>Space</code> pour commencer la sélection</li>
+<li>Déplacer avec les flèches</li>
+<li><code>Enter</code> pour copier</li>
+<li><code>Ctrl+b ]</code> pour coller</li>
+</ol>
+<hr />
+<h2>10. Scripts et automatisation</h2>
+<pre><code class="language-bash">#!/bin/bash
 # Script pour creer un environnement de travail
 
-session="dev_work"
+session=&quot;dev_work&quot;
 
 # Creer session avec 3 fenêtres
 tmux new-session -d -s $session
 tmux rename-window -t $session:1 'code'
-tmux send-keys -t $session:1 'cd ~/projets && code .' Enter
+tmux send-keys -t $session:1 'cd ~/projets &amp;&amp; code .' Enter
 
 tmux new-window -t $session -n 'server'
-tmux send-keys -t $session:server 'cd ~/projets && npm run dev' Enter
+tmux send-keys -t $session:server 'cd ~/projets &amp;&amp; npm run dev' Enter
 
 tmux new-window -t $session -n 'logs'
 tmux send-keys -t $session:logs 'tail -f ~/projets/logs/app.log' Enter
 
 # Se rattacher
-tmux attach -t $session</code></pre>
-
-    <h2 id="exercices-pratiques">Exercices pratiques</h2>
-<h3 id="Exercice 1 : Premier usage de tmux">Exercice 1 : Premier usage de tmux</h3>
-        <ol>
-            <li>Ouvre un terminal et lance tmux :
-                <pre><code>tmux new -s demo</code></pre>
-            </li>
-            <li>Tape une commande (ex: <code>ls</code>)</li>
-            <li>Détache avec <code>Ctrl+b d</code></li>
-            <li>Vérifie que la session existe toujours :
-                <pre><code>tmux ls</code></pre>
-            </li>
-            <li>Rattache-toi :
-                <pre><code>tmux attach -t demo</code></pre>
-            </li>
-        </ol>
-        <p>✅ Tu devrais voir le résultat de <code>ls</code> - la session a survécu !</p>
-<h3 id="Exercice 2 : Panneaux et fenêtres">Exercice 2 : Panneaux et fenêtres</h3>
-        <ol>
-            <li>Crée une nouvelle session :
-                <pre><code>tmux new -s exo2</code></pre>
-            </li>
-            <li>Sépare en deux verticalement : <code>Ctrl+b %</code></li>
-            <li>Passe au panneau de droite : <code>Ctrl+b o</code></li>
-            <li>Sépare en deux horizontalement : <code>Ctrl+b "</code></li>
-            <li>Ferme un panneau : <code>Ctrl+b x</code></li>
-            <li>Ajoute une fenêtre : <code>Ctrl+b c</code></li>
-            <li>Bascule entre fenêtres : <code>Ctrl+b n</code> puis <code>Ctrl+b p</code></li>
-            <li>Détache : <code>Ctrl+b d</code></li>
-        </ol>
-<h3 id="Exercice 3 : Configuration tmux">Exercice 3 : Configuration tmux</h3>
-        <ol>
-            <li>Vérifie si le fichier existe :
-                <pre><code>ls ~/.tmux.conf</code></pre>
-            </li>
-            <li>Crée-le avec cette configuration minimale :
-                <pre><code>cat > ~/.tmux.conf << 'EOF'
+tmux attach -t $session
+</code></pre>
+<hr />
+<h2>11. Exercices pratiques</h2>
+<h3>Exercice 1 : Premier usage de tmux</h3>
+<ol>
+<li>Ouvre un terminal et lance tmux :</li>
+</ol>
+<pre><code class="language-bash">tmux new -s demo
+</code></pre>
+<ol>
+<li>Tape une commande (ex: <code>ls</code>)</li>
+<li>Détache avec <code>Ctrl+b d</code></li>
+<li>Vérifie que la session existe toujours :</li>
+</ol>
+<pre><code class="language-bash">tmux ls
+</code></pre>
+<ol>
+<li>Rattache-toi :</li>
+</ol>
+<pre><code class="language-bash">tmux attach -t demo
+</code></pre>
+<p>✅ Tu devrais voir le résultat de <code>ls</code> - la session a survécu !</p>
+<h3>Exercice 2 : Panneaux et fenêtres</h3>
+<ol>
+<li>Crée une nouvelle session :</li>
+</ol>
+<pre><code class="language-bash">tmux new -s exo2
+</code></pre>
+<ol>
+<li>Sépare en deux verticalement : <code>Ctrl+b %</code></li>
+<li>Passe au panneau de droite : <code>Ctrl+b o</code></li>
+<li>Sépare en deux horizontalement : <code>Ctrl+b "</code></li>
+<li>Ferme un panneau : <code>Ctrl+b x</code></li>
+<li>Ajoute une fenêtre : <code>Ctrl+b c</code></li>
+<li>Bascule entre fenêtres : <code>Ctrl+b n</code> puis <code>Ctrl+b p</code></li>
+<li>Détache : <code>Ctrl+b d</code></li>
+</ol>
+<h3>Exercice 3 : Configuration tmux</h3>
+<ol>
+<li>Vérifie si le fichier existe :</li>
+</ol>
+<pre><code class="language-bash">ls ~/.tmux.conf
+</code></pre>
+<ol>
+<li>Crée-le avec cette configuration minimale :</li>
+</ol>
+<pre><code class="language-bash">cat &gt; ~/.tmux.conf &lt;&lt; 'EOF'
 # Raccourci prefix: Ctrl+a au lieu de Ctrl+b
 set -g prefix C-a
 unbind C-b
@@ -307,86 +396,137 @@ set -g base-index 1
 
 # Souris activee
 set -g mouse on
-EOF</code></pre>
-            </li>
-            <li>Recharge la config :
-                <pre><code>tmux source-file ~/.tmux.conf</code></pre>
-            </li>
-            <li>Teste : <code>Ctrl+a d</code> pour détacher</li>
-        </ol>
-<h3 id="Exercice 4 : Script de session de travail">Exercice 4 : Script de session de travail</h3>
-        <p>Crée un script <code>start-work.sh</code> :</p>
-        <pre><code>#!/bin/bash
+EOF
+</code></pre>
+<ol>
+<li>Recharge la config :</li>
+</ol>
+<pre><code class="language-bash">tmux source-file ~/.tmux.conf
+</code></pre>
+<ol>
+<li>Teste : <code>Ctrl+a d</code> pour détacher</li>
+</ol>
+<h3>Exercice 4 : Script de session de travail</h3>
+<p>Crée un script <code>start-work.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
 tmux new-session -d -s travail
 tmux rename-window -t travail:1 'Terminal'
-tmux new-window -t travail -n 'Web' 'cd ~/Sites && python3 -m http.server 8000'
-tmux attach -t travail</code></pre>
-        <p>Teste-le :</p>
-        <pre><code>chmod +x start-work.sh
-./start-work.sh</code></pre>
-<h2 id="resume">Résumé</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Commande</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>tmux new -s nom</code></td>
-                <td>Créer une session</td>
-            </tr>
-            <tr>
-                <td><code>tmux ls</code></td>
-                <td>Lister les sessions</td>
-            </tr>
-            <tr>
-                <td><code>tmux attach -t nom</code></td>
-                <td>Se rattacher</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b d</code></td>
-                <td>Détacher</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b c</code></td>
-                <td>Nouvelle fenêtre</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b %</code></td>
-                <td>Split vertical</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b "</code></td>
-                <td>Split horizontal</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b w</code></td>
-                <td>Lister fenêtres</td>
-            </tr>
-            <tr>
-                <td><code>Ctrl+b [</code></td>
-                <td>Mode scroll/copie</td>
-            </tr>
-            <tr>
-                <td><code>tmux kill-session -t nom</code></td>
-                <td>Supprimer session</td>
-            </tr>
-            <tr>
-                <td><code>tmux source-file ~/.tmux.conf</code></td>
-                <td>Recharger config</td>
-            </tr>
-        </tbody>
-    </table>
-    <ul>
-        <li><strong>tmux</strong> conserve tes sessions même si ta connexion coupe</li>
-        <li>Utilise <code>Ctrl+b</code> comme préfixe, puis la commande</li>
-        <li>Crée plusieurs <strong>fenêtres</strong> (onglets) et <strong>panneaux</strong> (splits)</li>
-        <li>Personnalise avec <code>~/.tmux.conf</code></li>
-    </ul>
-
-    <nav><a href="26-liens-symboliques-durs.html" class="nav-prev">← 26 - Liens symboliques et durs</a><a href="index.html" class="nav-next">Fin</a></nav>
+tmux new-window -t travail -n 'Web' 'cd ~/Sites &amp;&amp; python3 -m http.server 8000'
+tmux attach -t travail
+</code></pre>
+<p>Teste-le :</p>
+<pre><code class="language-bash">chmod +x start-work.sh
+./start-work.sh
+</code></pre>
+<hr />
+<h2>12. Résumé</h2>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tmux new -s nom</code></td>
+<td>Créer une session</td>
+</tr>
+<tr>
+<td><code>tmux ls</code></td>
+<td>Lister les sessions</td>
+</tr>
+<tr>
+<td><code>tmux attach -t nom</code></td>
+<td>Se rattacher</td>
+</tr>
+<tr>
+<td><code>Ctrl+b d</code></td>
+<td>Détacher</td>
+</tr>
+<tr>
+<td><code>Ctrl+b c</code></td>
+<td>Nouvelle fenêtre</td>
+</tr>
+<tr>
+<td><code>Ctrl+b %</code></td>
+<td>Split vertical</td>
+</tr>
+<tr>
+<td><code>Ctrl+b "</code></td>
+<td>Split horizontal</td>
+</tr>
+<tr>
+<td><code>Ctrl+b w</code></td>
+<td>Lister fenêtres</td>
+</tr>
+<tr>
+<td><code>Ctrl+b [</code></td>
+<td>Mode scroll/copie</td>
+</tr>
+<tr>
+<td><code>tmux kill-session -t nom</code></td>
+<td>Supprimer session</td>
+</tr>
+<tr>
+<td><code>tmux source-file ~/.tmux.conf</code></td>
+<td>Recharger config</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>tmux</strong> conserve tes sessions même si ta connexion coupe</li>
+<li>Utilise <code>Ctrl+b</code> comme préfixe, puis la commande</li>
+<li>Crée plusieurs <strong>fenêtres</strong> (onglets) et <strong>panneaux</strong> (splits)</li>
+<li>Personnalise avec <code>~/.tmux.conf</code></li>
+</ul>
+<hr />
+<p>&larr; <a href="26-liens-symboliques-durs.html">26 Liens symboliques et liens durs</a> &nbsp;|&nbsp; <a href="../README.md">README.md</a> &nbsp;|&nbsp; <span style="color:#666;">Fin</span></p>
 </div>
+<nav>
+<a href="26-liens-symboliques-et-liens-durs.html" style="color:#00d9ff;text-decoration:none;">&larr; Liens symboliques et liens durs</a> | <span style="color:#666;">Fin</span>
+</nav>
+
+<script>
+function copyCode(el) {
+  var container = el.closest('.code-block');
+  var code = el.querySelector('code');
+  var btn = el.querySelector('.copy-btn');
+  var progress = container.querySelector('progress');
+
+  if (!code || !btn) return;
+
+  var text = code.textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.classList.add('copied');
+    btn.querySelector('svg').innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.querySelector('svg').innerHTML = '<path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>';
+    }, 2000);
+
+    var val = 0;
+    progress.value = 0;
+    progress.classList.remove('loaded');
+    var interval = setInterval(function() {
+      val += 5;
+      progress.value = val;
+      if (val >= 100) {
+        clearInterval(interval);
+        setTimeout(function() { progress.classList.add('loaded'); }, 300);
+      }
+    }, 20);
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+</script>
 </body>
 </html>

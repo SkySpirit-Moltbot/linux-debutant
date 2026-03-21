@@ -1,6 +1,10 @@
 # Leçon 26 : Liens symboliques et liens durs
 
-## Qu'est-ce qu'un lien ?
+Dans cette leçon, tu vas découvrir comment créer des liens symboliques et des liens durs sous Linux. Ces mécanismes permettent d'accéder à un même fichier depuis plusieurs endroits sans le dupliquer.
+
+---
+
+## 1. Qu'est-ce qu'un lien ?
 
 Sous Linux, tout est fichier. Chaque fichier stocké sur le disque a :
 - Un **inode** : un numéro unique qui identifie le fichier sur le disque
@@ -12,21 +16,23 @@ Il existe deux types de liens :
 
 | Type | Lien dur (hard link) | Lien symbolique (soft link / symlink) |
 |------|---------------------|----------------------------------------|
-| **Concept** | Un autre nom pour le même fichier | Un raccourci / pointeur vers un autre fichier |
+| **Concept** | Un autre nom pour le même fichier | Un raccourci ou pointeur vers un autre fichier |
 | **Inode** | Même inode | Inode différent |
 | **Cross-filesystem** | ❌ Non | ✅ Oui |
 | **Vers répertoire** | ❌ Non | ✅ Oui |
 | **Vers fichier supprimé** | Continue de fonctionner | Devient cassé (lien mort) |
 
-## Liens durs (hard links)
+---
 
-### Créer un lien dur
+## 2. Liens durs (hard links)
+
+### ln - Créer un lien dur
 
 ```bash
 ln fichier_original lien_nouveau
 ```
 
-Exemple :
+**Exemple :**
 
 ```bash
 # Créer un lien dur vers rapport.txt dans ~/Documents/
@@ -35,7 +41,7 @@ ln /home/david/rapport.txt /home/david/Documents/rapport_lien.txt
 
 > ⚠️ Les deux noms pointent vers le **même contenu**. Modifier l'un modifie l'autre.
 
-### Vérifier avec `ls`
+### ls - Vérifier l'inode commun
 
 ```bash
 ls -li fichier_original lien_nouveau
@@ -51,7 +57,7 @@ $ ls -li rapport.txt Documents/rapport_lien.txt
 
 Le chiffre `2` (deuxième colonne) est le **nombre de liens durs** vers cet inode. Tant qu'au moins un lien existe, le fichier n'est pas supprimé physiquement.
 
-### Supprimer un lien dur
+### rm - Supprimer un lien dur
 
 ```bash
 rm lien_nouveau
@@ -59,27 +65,27 @@ rm lien_nouveau
 
 Le fichier original reste intact. Les données ne sont vraiment effacées du disque que quand le **dernier lien dur** est supprimé.
 
-## Liens symboliques (symlinks)
+---
 
-### Créer un lien symbolique
+## 3. Liens symboliques (symlinks)
+
+### ln -s - Créer un lien symbolique
 
 ```bash
 ln -s fichier_cible lien_symbolique
 ```
 
-Exemple :
+**Exemple :**
 
 ```bash
 # Créer un raccourci vers mes-documents dans le bureau
 ln -s /home/david/mes-documents /home/david/Bureau/mes-documents
-```
 
-```bash
 # Créer un lien symbolique vers un script dans /usr/local/bin/
 sudo ln -s /opt/mon-script.sh /usr/local/bin/mon-script
 ```
 
-### À quoi ça ressemble ?
+### ls - À quoi ça ressemble ?
 
 ```bash
 $ ls -la Bureau/
@@ -89,19 +95,17 @@ lrwxrwxrwx 1 david david   20 jan 15 10:00 mes-documents -> /home/david/mes-docu
 - `l` au début = c'est un lien symbolique
 - La flèche `->` montre vers quoi le lien pointe
 
-### Vérifier si un lien symbolique est cassé
+### test - Vérifier si un lien symbolique est cassé
 
 ```bash
 # Tester le lien
 test -e lien_symbolique && echo "OK" || echo "CASSÉ"
-```
 
-```bash
 # Lister les liens cassés
 find . -type l -xtype l
 ```
 
-### Supprimer un lien symbolique
+### rm - Supprimer un lien symbolique
 
 ```bash
 rm lien_symbolique
@@ -109,19 +113,21 @@ rm lien_symbolique
 
 > ⚠️ Pas de `/` à la fin du nom ! Sinon tu pourrais supprimer la **cible** par erreur.
 
-## Quand utiliser quoi ?
+---
 
-### Utilisez le lien symbolique quand :
+## 4. Quand utiliser quoi ?
+
+### Utilise le lien symbolique quand :
 - Tu veux créer un **raccourci** vers un fichier ou répertoire
 - La cible peut se trouver sur un **autre système de fichiers**
 - Tu veux créer une liaison vers un **répertoire**
 - La cible peut être modifiée ou supprimée (un lien mort est visible)
 
-### Utilisez le lien dur quand :
+### Utilise le lien dur quand :
 - Tu veux une **copie de sécurité intégrée** d'un fichier
 - Les deux fichiers doivent **toujours** pointer vers le même contenu
 - Tu travailles sur un **même système de fichiers**
-- Tu veux que le fichier persiste même si l'original est renommé/supprimé (tant qu'un lien reste)
+- Tu veux que le fichier persiste même si l'original est renommé ou supprimé (tant qu'un lien reste)
 
 ### Exemple concret : la configuration système
 
@@ -135,29 +141,31 @@ $ ls -la /usr/bin/python3
 -rwxr-xr-x 1 root root 10480 jan 15 10:00 python3
 ```
 
-## Exercices pratiques
+---
+
+## 5. Exercices pratiques
 
 ### Exercice 1 : Créer un lien symbolique vers un script
 
-1. Créez un fichier `test.sh` dans votre dossier personnel :
+1. Crée un fichier `test.sh` dans ton dossier personnel :
 ```bash
 echo 'echo "Bonjour depuis le script"' > ~/test.sh
 chmod +x ~/test.sh
 ```
 
-2. Créez un lien symbolique sur votre bureau :
+2. Crée un lien symbolique sur ton bureau :
 ```bash
 ln -s ~/test.sh ~/Bureau/test_rapide.sh
 ```
 
-3. Exécutez le lien :
+3. Exécute le lien :
 ```bash
 ~/Bureau/test_rapide.sh
 ```
 
-✅ Vous devriez voir "Bonjour depuis le script"
+✅ Tu devrais voir "Bonjour depuis le script"
 
-### Exercice 2 : Découvrir les liens dans `/etc/`
+### Exercice 2 : Découvrir les liens dans /etc/
 
 ```bash
 # Les paramètres régionaux sont souvent des liens symboliques
@@ -200,7 +208,9 @@ rm ~/fichier_test.txt
 test -e ~/lien_test && echo "OK" || echo "LIEN CASSÉ"
 ```
 
-## Résumé
+---
+
+## 6. Résumé
 
 | Commande | Description |
 |----------|-------------|

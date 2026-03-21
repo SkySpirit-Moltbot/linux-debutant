@@ -1,6 +1,10 @@
 # Leçon 27 : tmux - Multiplexeur de Terminal
 
-## Qu'est-ce qu'un multiplexeur de terminal ?
+Dans cette leçon, tu vas maîtriser tmux, un multiplexeur de terminal qui te permet de gérer plusieurs terminaux dans une seule fenêtre, de détacher et rattacher des sessions à distance, et de conserver ton travail même si ta connexion coupe.
+
+---
+
+## 1. Qu'est-ce qu'un multiplexeur de terminal ?
 
 Un **multiplexeur de terminal** comme **tmux** te permet de :
 
@@ -14,13 +18,15 @@ Avec tmux : tu te rattaches et tout est intact !
 
 > **Note :** Si tu utilises **screen** à la place de tmux, le principe est le même. tmux est juste plus moderne et mieux maintenu.
 
-## Concepts de base
+---
+
+## 2. Concepts de base
 
 | Concept | Description |
 |---------|-------------|
 | **Session** | Une session tmux est un environnement complet de terminaux |
 | **Fenêtre (Window)** | Un onglet dans la session (comme les onglets d'un navigateur) |
-| **Panneau (Pane)** | Une subdivision de la fenêtre (splits horizontaux/verticaux) |
+| **Panneau (Pane)** | Une subdivision de la fenêtre (splits horizontaux ou verticaux) |
 
 ```
 Session tmux
@@ -31,9 +37,11 @@ Session tmux
 └── Fenêtre 3 (editor)
 ```
 
-## Commandes de base
+---
 
-### Démarrer tmux
+## 3. Commandes de base
+
+### tmux - Démarrer tmux
 
 ```bash
 # Lancer une nouvelle session (nommee)
@@ -62,7 +70,11 @@ Le préfixe par défaut est **Ctrl+b**. Ensuite tu tapes la commande :
 | `Ctrl+b 0-9` | Aller à la fenêtre numéro X |
 | `Ctrl+b ?` | Afficher toutes les touches |
 
-### Se détacher et se rattacher
+---
+
+## 4. Se détacher et se rattacher
+
+### tmux ls - Lister les sessions actives
 
 ```bash
 # Se detacher : Ctrl+b d
@@ -70,7 +82,11 @@ Le préfixe par défaut est **Ctrl+b**. Ensuite tu tapes la commande :
 
 # Lister les sessions actives
 tmux ls
+```
 
+### tmux attach - Se rattacher à une session
+
+```bash
 # Se rattacher a une session
 tmux attach -t ma_session
 
@@ -78,17 +94,16 @@ tmux attach -t ma_session
 tmux new -A -s ma_session
 ```
 
-## Navigation entre panneaux
+---
+
+## 5. Navigation entre panneaux
 
 ```bash
 # Passer au panneau suivant
 Ctrl+b o
 
-# Aller a un panneau précis (avec mouse enabled ou pas)
+# Aller a un panneau précis
 Ctrl+b ;
-
-# Utiliser la souris (si active)
-# Clic directement sur le panneau
 
 # Resize du panneau actif
 Ctrl+b Alt+flèche   # Redimensionner
@@ -98,7 +113,9 @@ Ctrl+b : resize-pane -L  # Agrandir vers la gauche
 Ctrl+b : resize-pane -R  # Agrandir vers la droite
 ```
 
-## Gestion des fenêtres
+---
+
+## 6. Gestion des fenêtres
 
 ```bash
 # Renommer la fenêtre actuelle
@@ -110,26 +127,34 @@ Ctrl+b w
 # Aller a la fenêtre 1
 Ctrl+b 1
 
-# Déplacer la fenêtre vers la gauche/droite
+# Déplacer la fenêtre vers la gauche ou la droite
 Ctrl+b : swap-window -t -1   # Échanger avec précédente
 Ctrl+b : swap-window -t +1   # Échanger avec suivante
 ```
 
-## Commandes utiles
+---
+
+## 7. Commandes utiles
+
+### Depuis le shell (hors tmux)
 
 ```bash
-# Depuis le shell (hors tmux)
 tmux new-session -d -s nom_session 'commande'  # Créer avec commande auto
 tmux send-keys -t nom_session 'ls' Enter       # Envoyer une commande
 tmux kill-session -t nom_session               # Tuer une session
 tmux kill-server                               # Tuer tmux complètement
+```
 
-# Depuis l'intérieur de tmux (: pour mode commande)
+### Depuis l'intérieur de tmux (: pour mode commande)
+
+```bash
 :kill-session     # Tuer la session actuelle
 :kill-server      # Tuer toutes les sessions
 ```
 
-## Personnalisation avec ~/.tmux.conf
+---
+
+## 8. Personnalisation avec ~/.tmux.conf
 
 ```bash
 # Exemple de configuration ~/.tmux.conf
@@ -153,11 +178,14 @@ set -g default-command "reattach-to-user-namespace -l bash"
 ```
 
 Après modification :
+
 ```bash
 tmux source-file ~/.tmux.conf
 ```
 
-## Scrolling et copie de texte
+---
+
+## 9. Scrolling et copie de texte
 
 ```bash
 # Mode copie (scrollback)
@@ -169,13 +197,16 @@ Ctrl+b [
 ```
 
 Pour copier :
+
 1. `Ctrl+b [` pour entrer en mode copie
 2. `Space` pour commencer la sélection
 3. Déplacer avec les flèches
 4. `Enter` pour copier
 5. `Ctrl+b ]` pour coller
 
-## Scripts et automatisation
+---
+
+## 10. Scripts et automatisation
 
 ```bash
 #!/bin/bash
@@ -198,7 +229,9 @@ tmux send-keys -t $session:logs 'tail -f ~/projets/logs/app.log' Enter
 tmux attach -t $session
 ```
 
-## Exercices pratiques
+---
+
+## 11. Exercices pratiques
 
 ### Exercice 1 : Premier usage de tmux
 
@@ -269,6 +302,7 @@ tmux source-file ~/.tmux.conf
 ### Exercice 4 : Script de session de travail
 
 Crée un script `start-work.sh` :
+
 ```bash
 #!/bin/bash
 tmux new-session -d -s travail
@@ -278,12 +312,15 @@ tmux attach -t travail
 ```
 
 Teste-le :
+
 ```bash
 chmod +x start-work.sh
 ./start-work.sh
 ```
 
-## Résumé
+---
+
+## 12. Résumé
 
 | Commande | Description |
 |----------|-------------|
@@ -306,4 +343,4 @@ chmod +x start-work.sh
 
 ---
 
-&larr; [26 - Liens symboliques et liens durs](26-liens-symboliques-durs.html) &nbsp;|&nbsp; <span style="color:#666;">Fin</span>
+&larr; [26 Liens symboliques et liens durs](26-liens-symboliques-durs.html) &nbsp;|&nbsp; [README.md](../README.md) &nbsp;|&nbsp; <span style="color:#666;">Fin</span>
