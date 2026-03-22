@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-29 lecons completes pour apprendre Linux pas a pas :
+30 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
