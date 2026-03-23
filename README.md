@@ -68,7 +68,3 @@ Libre de droits
 ---
 
 ** Bonne apprentissage ! **
-
----
-
-** Bonne apprentissage ! **
