@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-32 lecons completes pour apprendre Linux pas a pas :
+31 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -46,7 +46,6 @@ Apprenez Linux facilement avec notre cours complet !
 | 29 | Git - Gestion de version |
 | 30 | Alias et raccourcis |
 | 31 | Gestion des paquets |
-| 32 | Firewall et filtrage réseau |
 
 ## Commencer
 
