@@ -130,7 +130,7 @@ li { line-height: 1.7; color: #bbb; margin: 5px 0; }
 <tr><td>`[ ]`</td><td>Classe de caractères</td><td>`[aeiou]` → n'importe quelle voyelle</td></tr>
 <tr><td>`[^ ]`</td><td>Négation d'une classe</td><td>`[^0-9]` → tout sauf un chiffre</td></tr>
 <tr><td>`\`</td><td>Échappement</td><td>`\.` → le caractère point literal</td></tr>
-<tr><td>`</td><td>`</td><td>OU logique</td><td>`cat\</td><td>dog` → "cat" ou "dog"</td></tr>
+<tr><td>`|`</td><td>OU logique</td><td>`cat|dog` → "cat" ou "dog"</td></tr>
 <tr><td>`( )`</td><td>Groupement</td><td>`(ab)+` → "ab", "abab", "ababab"</td></tr>
 <tr><td>`{n}`</td><td>Exactement n fois</td><td>`a{3}` → "aaa"</td></tr>
 <tr><td>`{n,m}`</td><td>Entre n et m fois</td><td>`a{2,4}` → "aa", "aaa", "aaaa"</td></tr>
@@ -566,7 +566,7 @@ li { line-height: 1.7; color: #bbb; margin: 5px 0; }
 
 <h2>6. awk — Manipulation de texte avancée</h2>
 
-<p><code>awk</code> est extremely puissant pour traiter du texte structuré (comme des tableaux ou des logs).</p>
+<p><code>awk</code> est extrêmement puissant pour traiter du texte structuré (comme des tableaux ou des logs).</p>
 
 <h3>Syntaxe de base</h3>
 
@@ -1178,13 +1178,13 @@ li { line-height: 1.7; color: #bbb; margin: 5px 0; }
 <li><strong>Perl/PCRE</strong> : Les Regex de Perl sont encore plus puissantes (supportées par <code>grep -P</code>)</li>
 <li><strong>Langages de programmation</strong> : Python, JavaScript, PHP supportent tous les Regex</li>
 <li><strong>Outils en ligne</strong> : regex101.com pour tester tes Regex visuellement</li>
-<li><strong>sed et awk avancés</strong> :筒 ward <code>sed -i</code> pour modification in-place, <code>awk</code> pour du parsing CSV/JSON léger</li>
+<li><strong>sed et awk avancés</strong> : utiliser <code>sed -i</code> pour modification in-place, <code>awk</code> pour du parsing CSV/JSON léger</li>
 
 
 </div>
 
 <nav>
-<a href="31-gestion-paquets.html" style="color:#00d9ff;text-decoration:none;">&larr; 31 - Gestion des paquets</a> | <a href="33-compilation-developpement.html" style="color:#00d9ff;text-decoration:none;">33 - Compilation et Développement (gcc / make) &rarr;</a>
+<a href="31-gestion-paquets.html" style="color:#00d9ff;text-decoration:none;">&larr; 31 - Gestion des paquets</a>
 
 </nav>
 
