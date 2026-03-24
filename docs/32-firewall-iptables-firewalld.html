@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leçon 31 : Gestion des paquets - SkyLinux</title>
+<title>Leçon 32 : Firewall et filtrage réseau - SkyLinux</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/31-gestion-paquets.html">
-<meta property="og:title" content="Leçon 31 : Gestion des paquets - SkyLinux">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/32-firewall-iptables-firewalld.html">
+<meta property="og:title" content="Leçon 32 : Firewall et filtrage réseau - SkyLinux">
 <meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
-<meta name="description" content="Leçon 31 : Gestion des paquets - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
-<meta name="keywords" content="linux, cours, Leçon 31 : Gestion des paquets, debutant, ubuntu">
+<meta name="description" content="Leçon 32 : Firewall et filtrage réseau - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, Leçon 32 : Firewall et filtrage réseau, debutant, ubuntu">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
@@ -101,419 +101,471 @@ li { line-height: 1.7; color: #bbb; margin: 5px 0; }
 </div>
 <div class="container">
 
-<h1>Leçon 31 : Gestion des paquets</h1>
-<p>Dans cette leçon, tu vas découvrir comment installer, mettre à jour et supprimer des logiciels sur Linux. Chaque distribution a son propre système de paquets, et tu apprendras à utiliser apt (Debian/Ubuntu), dnf/yum (Fedora/RHEL), et snap/flatpak.</p>
+<h1>Leçon 32 : Firewall et filtrage réseau</h1>
+<p>Dans cette leçon, tu vas découvrir comment protéger ton système Linux avec un pare-feu. Tu apprendras à utiliser <strong>iptables</strong>, <strong>ufw</strong> et <strong>firewalld</strong> pour contrôler le trafic réseau entrant et sortant de ta machine.</p>
 <hr />
-<h2>1. Qu'est-ce qu'un paquet ?</h2>
-<p>Un <strong>paquet</strong> est un fichier compressé qui contient un logiciel prêt à être installé. Il inclut :</p>
+<h2>1. Qu'est-ce qu'un firewall ?</h2>
+<p>Un <strong>firewall</strong> (pare-feu) est un système qui filtre le trafic réseau. Il decide :</p>
 <ul>
-<li>Les fichiers du programme</li>
-<li>Des métadonnées (nom, version, dépendances)</li>
-<li>Des scripts d'installation et de désinstallation</li>
+<li><strong>Ce qui entre</strong> dans ton ordinateur (trafic entrant)</li>
+<li><strong>Ce qui sort</strong> de ton ordinateur (trafic sortant)</li>
 </ul>
-<p><strong>Types de paquets :</strong></p>
+<p>Chaque règle dit "autorise" ou "interdit" un type de connexion selon :</p>
 <ul>
-<li><code>.deb</code> → Debian, Ubuntu, Linux Mint (système <strong>apt</strong>)</li>
-<li><code>.rpm</code> → Fedora, RHEL, CentOS (système <strong>dnf/yum</strong>)</li>
+<li>Le port (ex: 80 pour HTTP, 443 pour HTTPS, 22 pour SSH)</li>
+<li>Le protocole (TCP ou UDP)</li>
+<li>L'adresse IP source ou destination</li>
 </ul>
-<p><strong>Formats modernes :</strong></p>
+<p><strong>Pourquoi c'est important ?</strong></p>
 <ul>
-<li><strong>Snap</strong> → Ubuntu,通用的 sandbox</li>
-<li><strong>Flatpak</strong> → Linux通用的, sandbox</li>
+<li>Bloquer les connexions non désirées</li>
+<li>Protéger contre les attaques</li>
+<li>Limiter l'accès aux services</li>
 </ul>
 <hr />
-<h2>2. APT (Debian/Ubuntu)</h2>
-<p>APT (<em>Advanced Package Tool</em>) est le système de paquets le plus utilisé sur Linux.</p>
-<h3>Mettre à jour la liste des paquets</h3>
+<h2>2. iptables - Le classique</h2>
+<p><strong>iptables</strong> est l'outil historique de filtrage sur Linux. Il fait partie du noyau Linux.</p>
+<h3>Principe de base</h3>
+<p>Un paquet traverse des chaînes (INPUT, OUTPUT, FORWARD) et est évalué par des règles. La première règle correspondante s'applique.</p>
+<p>Les chaînes principales :</p>
+<ul>
+<li><strong>INPUT</strong> : trafic entrant vers ta machine</li>
+<li><strong>OUTPUT</strong> : trafic sortant de ta machine</li>
+<li><strong>FORWARD</strong> : trafic qui traverse ta machine (routeur)</li>
+</ul>
+<h3>Vérifier l'état</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code>sudo apt update</code>
+    <code># Voir toutes les règles actives
+sudo iptables -L -n -v
+
+# Avec numérotation des lignes
+sudo iptables -L -n --line-numbers
+
+# Voir les règles d'une chaîne précise
+sudo iptables -L INPUT -n -v</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<p>Cette commande ne installe rien, elle met à jour la liste des paquets disponibles depuis les dépôts.</p>
-<h3>Mettre à jour le système</h3>
+<h3>Autoriser une connexion</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Mettre à jour tous les paquets
-sudo apt upgrade
+    <code># Autoriser le trafic sur le port 22 (SSH)
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
-# Mettre à jour en installant aussi de nouveaux paquets si nécessaire
-sudo apt full-upgrade</code>
+# Autoriser le trafic sur le port 80 (HTTP)
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+# Autoriser le trafic sur le port 443 (HTTPS)
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Installer un paquet</h3>
+<h3>Bloquer une connexion</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installer un paquet
-sudo apt install nom_du_paquet
+    <code># Bloquer tout le trafic depuis une IP précise
+sudo iptables -A INPUT -s 192.168.1.100 -j DROP
 
-# Installer plusieurs paquets
-sudo apt install paquet1 paquet2 paquet3
+# Bloquer le trafic sur un port
+sudo iptables -A INPUT -p tcp --dport 23 -j DROP
 
-# Installer sans demander confirmation
-sudo apt install -y nom_du_paquet</code>
+# Bloquer les pings (ICMP)
+sudo iptables -A INPUT -p icmp --icmp-type echo-request -j DROP</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Exemple concret</h3>
+<h3>Supprimer une règle</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installer le serveur web Nginx
-sudo apt install nginx
+    <code># Voir les règles avec leur numéro
+sudo iptables -L INPUT --line-numbers
 
-# Installer des outils de développement
-sudo apt install build-essential git curl wget</code>
+# Supprimer la règle 3 de INPUT
+sudo iptables -D INPUT 3</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Supprimer un paquet</h3>
+<h3>Politique par défaut</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Supprimer le paquet mais garder les fichiers de configuration
-sudo apt remove nom_du_paquet
+    <code># Mettre DROP par défaut sur INPUT (tout bloquer sauf autorisé)
+sudo iptables -P INPUT DROP
+sudo iptables -P FORWARD DROP
 
-# Supprimer le paquet ET ses fichiers de configuration
-sudo apt purge nom_du_paquet
-
-# Supprimer les paquets devenus inutiles
-sudo apt autoremove</code>
+# Autoriser tout en sortie (moins sécurisé)
+sudo iptables -P OUTPUT ACCEPT</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Chercher un paquet</h3>
+<h3>Autoriser les connexions établies</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Rechercher dans les noms de paquets
-apt search nom_du_paquet
-
-# Afficher les informations d'un paquet
-apt show nom_du_paquet</code>
+    <code># Permettre les réponses aux connexions sortantes
+sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Lister les paquets installés</h3>
+<h3>Sauvegarder les règles</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Lister tous les paquets installés
-apt list --installed
+    <code># Ubuntu/Debian : sauvegarder
+sudo iptables-save > /etc/iptables/rules.v4
 
-# Vérifier si un paquet est installé
-dpkg -l | grep nom_du_paquet</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<hr />
-<h2>3. DNF et YUM (Fedora/RHEL)</h2>
-<h3>DNF (Dandified YUM) - Fedora, RHEL 8+</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Mettre à jour tous les paquets
-sudo dnf update
-
-# Installer un paquet
-sudo dnf install nom_du_paquet
-
-# Supprimer un paquet
-sudo dnf remove nom_du_paquet
-
-# Rechercher un paquet
-dnf search nom_du_paquet
-
-# Lister les mises à jour disponibles
-dnf check-update
-
-# Nettoyer le cache
-dnf clean all</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<h3>YUM - Ancien (RHEL 7, CentOS 7)</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code>sudo yum update
-sudo yum install nom_du_paquet
-sudo yum remove nom_du_paquet</code>
+# Restaurer
+sudo iptables-restore < /etc/iptables/rules.v4</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
 <hr />
-<h2>4. Snap</h2>
-<p><strong>Snap</strong> est un système de paquets universel créé par Canonical. Les applications snp sont isoléées dans des sandbox.</p>
+<h2>3. ufw - Le simple</h2>
+<p><strong>ufw</strong> (Uncomplicated Firewall) est une interface simplifiée pour iptables. Parfait pour les débutants.</p>
+<h3>Installation</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installer snapd (si pas déjà installé)
-sudo apt install snapd
+    <code># Vérifier si installé
+which ufw
 
-# Installer une application snap
-sudo snap install nom_du_paquet
-
-# Lister les snaps installés
-snap list
-
-# Mettre à jour un snap
-sudo snap refresh nom_du_paquet
-
-# Mettre à jour tous les snaps
-sudo snap refresh
-
-# Supprimer un snap
-sudo snap remove nom_du_paquet</code>
+# Installer (Ubuntu/Debian)
+sudo apt install ufw</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Exemples concrets</h3>
+<h3>Activation</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installer VS Code
-sudo snap install code --classic
+    <code># Activer le firewall
+sudo ufw enable
 
-# Installer Spotify
-sudo snap install spotify
+# Désactiver le firewall
+sudo ufw disable
 
-# Installer Firefox
-sudo snap install firefox</code>
+# Voir le statut
+sudo ufw status verbose</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Autoriser / Bloquer par port</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Autoriser SSH
+sudo ufw allow ssh
+
+# Autoriser HTTP
+sudo ufw allow 80/tcp
+
+# Autoriser HTTPS
+sudo ufw allow 443/tcp
+
+# Autoriser un port UDP
+sudo ufw allow 53/udp
+
+# Autoriser une plage de ports
+sudo ufw allow 1000:2000/tcp</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Bloquer par port</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Bloquer HTTP
+sudo ufw deny 80/tcp
+
+# Bloquer tout depuis une IP
+sudo ufw insert 1 deny from 192.168.1.100</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Règles par rapport aux applications</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Lister les applications connues
+sudo ufw app list
+
+# Autoriser par nom d'application
+sudo ufw allow 'OpenSSH'
+sudo ufw allow 'Nginx Full'</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Supprimer une règle</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Par numéro
+sudo ufw status numbered
+sudo ufw delete 3
+
+# Par règle
+sudo ufw delete allow 80/tcp</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Règles de base recommandées</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Configuration initiale sûre
+sudo ufw default deny incoming   # Tout refuser par défaut
+sudo ufw default allow outgoing  # Tout autoriser en sortie
+
+# Autoriser SSH (IMPORTANT avant d'activer !)
+sudo ufw allow 22/tcp
+
+# Activer
+sudo ufw enable</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Réinitialiser</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Remettre à zéro
+sudo ufw reset</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
 <hr />
-<h2>5. Flatpak</h2>
-<p><strong>Flatpak</strong> est un autre système de paquets universel, très utilisé sur Linux.</p>
+<h2>4. firewalld - Le dynamique</h2>
+<p><strong>firewalld</strong> est utilisé principalement sur Fedora, RHEL et CentOS. Il supporte les "zones" et les "services".</p>
+<h3>Vérifier l'état</h3>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installer flatpak (si pas déjà installé)
-sudo apt install flatpak
+    <code># Voir le statut
+sudo systemctl status firewalld
 
-# Ajouter le dépôt Flathub
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# Vérifier si actif
+sudo firewall-cmd --state
 
-# Installer une application
-flatpak install flathub nom.de.lapplication
-
-# Lister les applications installées
-flatpak list
-
-# Mettre à jour
-flatpak update
-
-# Supprimer
-flatpak uninstall nom.de.lapplication</code>
+# Voir les paramètres actifs
+sudo firewall-cmd --list-all</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<h3>Exemples concrets</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Installer GIMP (traitement d'image)
-flatpak install flathub org.gimp.GIMP
-
-# Installer VLC
-flatpak install flathub org.videolan.VLC
-
-# Installer LibreOffice
-flatpak install flathub org.libreoffice.LibreOffice</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<hr />
-<h2>6. Comparatif des systèmes</h2>
+<h3>Zones prédéfinies</h3>
 <table>
 <thead>
 <tr>
-<th>Opération</th>
-<th>APT (Debian/Ubuntu)</th>
-<th>DNF (Fedora)</th>
-<th>Snap</th>
-<th>Flatpak</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mise à jour liste</td>
-<td><code>apt update</code></td>
-<td><code>dnf check-update</code></td>
-<td><code>snap refresh</code></td>
-<td><code>flatpak update</code></td>
-</tr>
-<tr>
-<td>Installer</td>
-<td><code>apt install pkg</code></td>
-<td><code>dnf install pkg</code></td>
-<td><code>snap install pkg</code></td>
-<td><code>flatpak install flathub pkg</code></td>
-</tr>
-<tr>
-<td>Supprimer</td>
-<td><code>apt remove pkg</code></td>
-<td><code>dnf remove pkg</code></td>
-<td><code>snap remove pkg</code></td>
-<td><code>flatpak uninstall pkg</code></td>
-</tr>
-<tr>
-<td>Rechercher</td>
-<td><code>apt search pkg</code></td>
-<td><code>dnf search pkg</code></td>
-<td><code>snap find pkg</code></td>
-<td><code>flatpak search pkg</code></td>
-</tr>
-<tr>
-<td>Lister installés</td>
-<td><code>apt list --installed</code></td>
-<td><code>dnf list installed</code></td>
-<td><code>snap list</code></td>
-<td><code>flatpak list</code></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2>7. Dépôts de paquets</h2>
-<p>Un <strong>dépôt</strong> (repository) est un serveur qui contient des paquets. Tu peux en ajouter pour avoir plus de logiciels.</p>
-<h3>APT : Ajouter un dépôt</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Exemple : ajouter le dépôt VS Code sur Ubuntu
-sudo apt install software-properties-common apt-transport-https wget
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
-sudo apt update
-sudo apt install code</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<h3>Gérer les dépôts via interface</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Ubuntu/Debian : interface graphique
-sudo software-properties-gtk
-
-# Fedora : interface graphique
-sudo dnf dragora</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<hr />
-<h2>8. Paquets .deb et .rpm manuels</h2>
-<p>Parfois, tu download un fichier <code>.deb</code> ou <code>.rpm</code> directement.</p>
-<h3>Installer un .deb (Debian/Ubuntu)</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Avec dpkg (gestionnaire de base)
-sudo dpkg -i fichier.deb
-
-# Si des dépendances manquent, les installer
-sudo apt install -f
-
-# Ou avec gdebi (résout les dépendances automatiquement)
-sudo apt install gdebi
-sudo gdebi fichier.deb</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<h3>Installer un .rpm (Fedora/RHEL)</h3>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Avec rpm (gestionnaire de base)
-sudo rpm -i fichier.rpm
-
-# Ou avec dnf (meilleur, résout les dépendances)
-sudo dnf install fichier.rpm</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<blockquote>
-<p>⚠️ Installer des paquets manuellement (hors dépôts) présente des risques : pas de mises à jour automatiques, possibles conflits de dépendances.</p>
-</blockquote>
-<hr />
-<h2>9. Hiérarchie des dossiers importants</h2>
-<table>
-<thead>
-<tr>
-<th>Dossier</th>
+<th>Zone</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>/etc/apt/sources.list.d/</code></td>
-<td>Dépôts APT supplémentaires</td>
+<td><code>drop</code></td>
+<td>Tout autorisé en sortie, rien en entrée</td>
 </tr>
 <tr>
-<td><code>/var/cache/apt/archives/</code></td>
-<td>Paquets .deb téléchargés</td>
+<td><code>block</code></td>
+<td>Tout rejeté avec message ICMP</td>
 </tr>
 <tr>
-<td><code>/var/lib/dpkg/</code></td>
-<td>Base de données des paquets installés</td>
+<td><code>public</code></td>
+<td>Pas de confiance, ports ouverts un par un</td>
 </tr>
 <tr>
-<td><code>/var/cache/dnf/</code></td>
-<td>Cache DNF</td>
+<td><code>external</code></td>
+<td>Pour routeur avec NAT</td>
 </tr>
 <tr>
-<td><code>/snap/</code></td>
-<td>Applications Snap</td>
+<td><code>dmz</code></td>
+<td>Services limités accessibles</td>
 </tr>
 <tr>
-<td><code>~/.local/share/flatpak/</code></td>
-<td>Applications Flatpak</td>
+<td><code>work</code></td>
+<td>Environnement de travail</td>
+</tr>
+<tr>
+<td><code>home</code></td>
+<td>Environnement domestique</td>
+</tr>
+<tr>
+<td><code>internal</code></td>
+<td>Réseau interne de confiance</td>
+</tr>
+<tr>
+<td><code>trusted</code></td>
+<td>Tout autorisé</td>
+</tr>
+</tbody>
+</table>
+<h3>Commandes de base</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Voir la zone active
+sudo firewall-cmd --get-active-zones
+
+# Voir les services autorisés
+sudo firewall-cmd --list-services
+
+# Autoriser un service
+sudo firewall-cmd --add-service=http
+sudo firewall-cmd --add-service=https
+
+# Autoriser un port
+sudo firewall-cmd --add-port=80/tcp
+sudo firewall-cmd --add-port=5000-5010/udp
+
+# Supprimer un service
+sudo firewall-cmd --remove-service=http
+
+# Supprimer un port
+sudo firewall-cmd --remove-port=80/tcp</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Rendre les changements permanents</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Ajouter --permanent pour rendre permanent
+sudo firewall-cmd --permanent --add-service=http
+
+# Recharger pour appliquer
+sudo firewall-cmd --reload</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<hr />
+<h2>5. Comparatif</h2>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>iptables</th>
+<th>ufw</th>
+<th>firewalld</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Distros</td>
+<td>Toutes</td>
+<td>Debian/Ubuntu</td>
+<td>Fedora/RHEL</td>
+</tr>
+<tr>
+<td>Difficulté</td>
+<td>Avancé</td>
+<td>Facile</td>
+<td>Intermédiaire</td>
+</tr>
+<tr>
+<td>Fichiers config</td>
+<td>/etc/iptables/rules.v4</td>
+<td>/etc/ufw/</td>
+<td>/etc/firewalld/</td>
+</tr>
+<tr>
+<td>Zones</td>
+<td>non</td>
+<td>non</td>
+<td>oui</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2>10. Résumé des commandes</h2>
+<h2>6. Scénarios courants</h2>
+<h3>Scénario 1 : Serveur web minimal (ufw)</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp    # SSH
+sudo ufw allow 80/tcp   # HTTP
+sudo ufw allow 443/tcp  # HTTPS
+sudo ufw enable</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Scénario 2 : Protéger SSH (anti brute force avec iptables)</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Limiter les connexions SSH (anti brute force)
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 -j DROP</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<h3>Scénario 3 : Autoriser uniquement certaines IPs (firewalld)</h3>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code>sudo firewall-cmd --permanent --add-source=192.168.1.0/24
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<hr />
+<h2>7. Bonnes pratiques</h2>
+<ul>
+<li><strong>Configure avant d'activer</strong> : toujours autoriser SSH (port 22) AVANT d'activer le firewall</li>
+<li><strong>Politique par défaut restrictive</strong> : refuse tout par défaut, autorise uniquement le nécessaire</li>
+<li><strong>Sauvegarde tes règles</strong> : copie les fichiers de configuration</li>
+<li><strong>Teste après configuration</strong> : vérifie que les services fonctionnent</li>
+</ul>
+<hr />
+<h2>8. Résumé des commandes</h2>
 <table>
 <thead>
 <tr>
@@ -523,161 +575,139 @@ sudo dnf install fichier.rpm</code>
 </thead>
 <tbody>
 <tr>
-<td><code>apt update</code></td>
-<td>Mettre à jour la liste des paquets</td>
+<td><code>iptables -L -n -v</code></td>
+<td>Lister les règles iptables</td>
 </tr>
 <tr>
-<td><code>apt upgrade</code></td>
-<td>Mettre à jour tous les paquets</td>
+<td><code>iptables -A INPUT -p tcp --dport 22 -j ACCEPT</code></td>
+<td>Autoriser SSH</td>
 </tr>
 <tr>
-<td><code>apt install pkg</code></td>
-<td>Installer un paquet</td>
+<td><code>iptables -A INPUT -s IP -j DROP</code></td>
+<td>Bloquer une IP</td>
 </tr>
 <tr>
-<td><code>apt remove pkg</code></td>
-<td>Supprimer un paquet</td>
+<td><code>ufw status</code></td>
+<td>Voir le statut ufw</td>
 </tr>
 <tr>
-<td><code>apt search pkg</code></td>
-<td>Rechercher un paquet</td>
+<td><code>ufw allow 80/tcp</code></td>
+<td>Autoriser HTTP</td>
 </tr>
 <tr>
-<td><code>apt list --installed</code></td>
-<td>Lister les paquets installés</td>
+<td><code>ufw enable</code></td>
+<td>Activer ufw</td>
 </tr>
 <tr>
-<td><code>dpkg -l</code></td>
-<td>Lister tous les paquets installés (détails)</td>
+<td><code>firewall-cmd --list-all</code></td>
+<td>Voir config firewalld</td>
 </tr>
 <tr>
-<td><code>dnf install pkg</code></td>
-<td>Installer (Fedora/RHEL)</td>
+<td><code>firewall-cmd --add-service=http</code></td>
+<td>Ajouter service</td>
 </tr>
 <tr>
-<td><code>snap install pkg</code></td>
-<td>Installer via Snap</td>
-</tr>
-<tr>
-<td><code>flatpak install flathub pkg</code></td>
-<td>Installer via Flatpak</td>
+<td><code>firewall-cmd --reload</code></td>
+<td>Recharger firewalld</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2>11. Exercice pratique</h2>
-<h3>Exercice : Gère les paquets sur ton système</h3>
-<p><strong>Objectif</strong> : Apprendre à utiliser le système de paquets de ta distribution.</p>
-<p><strong>Étape 1 : Connais ta distribution</strong></p>
+<h2>9. Exercice pratique</h2>
+<h3>Exercice : Configure ton firewall</h3>
+<p><strong>Objectif</strong> : Apprendre à protéger une machine avec ufw.</p>
+<p><strong>Prérequis</strong> : Une distribution Ubuntu/Debian ou VM de test.</p>
+<p><strong>Étape 1 : Vérifie l'état actuel</strong></p>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Voir ta distribution
-lsb_release -a
+    <code>sudo ufw status</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<p><strong>Étape 2 : Configure les règles de base</strong></p>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Règles par défaut
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
 
-# Ou
-cat /etc/os-release</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<p><strong>Étape 2 : Mets à jour ton système</strong></p>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Sur Ubuntu/Debian
-sudo apt update
-sudo apt upgrade -y
+# Autorise SSH (important !)
+sudo ufw allow 22/tcp
 
-# Sur Fedora
-sudo dnf update -y</code>
+# Autorise HTTP et HTTPS si serveur web
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<p><strong>Étape 3 : Recherche un paquet</strong></p>
+<p><strong>Étape 3 : Active le firewall</strong></p>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Recherche un outil (exemple : htop)
-apt search htop
-# ou
-dnf search htop</code>
+    <code>sudo ufw enable
+sudo ufw status verbose</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<p><strong>Étape 4 : Installe un paquet</strong></p>
+<p><strong>Étape 4 : Teste la connectivité</strong></p>
 <div class="code-block">
   <progress value="0" max="100"></progress>
   <div class="code-line" onclick="copyCode(this)">
-    <code># Installe htop (gestionnaire de processus en ligne de commande)
-sudo apt install htop
-# ou
-sudo dnf install htop</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<p><strong>Étape 5 : Vérifie l'installation</strong></p>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code>htop
-# (appuie sur q pour quitter)</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<p><strong>Étape 6 : Lis les informations du paquet</strong></p>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code>apt show htop
-# ou
-dnf info htop</code>
-    <button class="copy-btn" aria-label="Copier">
-      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-    </button>
-  </div>
-</div>
-<p><strong>Étape 7 : Désinstalle et nettoie</strong></p>
-<div class="code-block">
-  <progress value="0" max="100"></progress>
-  <div class="code-line" onclick="copyCode(this)">
-    <code># Désinstalle htop
-sudo apt remove htop
-sudo apt autoremove
+    <code># Depuis une autre machine, teste SSH
+ssh user@ton-serveur
 
-# Nettoie le cache des paquets
-sudo apt clean
-
-# Sur Fedora
-sudo dnf clean all</code>
+# Teste que HTTP est accessible
+curl http://localhost</code>
     <button class="copy-btn" aria-label="Copier">
       <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
     </button>
   </div>
 </div>
-<p>✅ Tu sais maintenant gérer les logiciels sur Linux !</p>
+<p><strong>Étape 5 : Ajoute une règle pour bloquer une IP</strong></p>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Bloque une IP spécifique
+sudo ufw insert 1 deny from 203.0.113.50 to any
+sudo ufw status numbered</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<p><strong>Étape 6 : Supprime une règle</strong></p>
+<div class="code-block">
+  <progress value="0" max="100"></progress>
+  <div class="code-line" onclick="copyCode(this)">
+    <code># Supprime la règle 3
+sudo ufw delete 3</code>
+    <button class="copy-btn" aria-label="Copier">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
+  </div>
+</div>
+<p>✅ Tu sais maintenant configurer un pare-feu sur Linux !</p>
 <hr />
-<h2>12. Aller plus loin</h2>
+<h2>10. Aller plus loin</h2>
 <ul>
-<li><strong>PPA (Personal Package Archive)</strong> : Dépôts créés par des utilisateurs sur Ubuntu</li>
-<li><strong>RPM Fusion</strong> : Dépôt additionnel pour Fedora avec des logiciels non inclus par défaut</li>
-<li><strong>AppImage</strong> : Format de paquets portables qui fonctionnent sans installation</li>
-<li><strong>Gestionnaire de paquets graphiques</strong> : Software Center (Ubuntu), GNOME Software, Discover (KDE)</li>
+<li><strong>fail2ban</strong> : outil qui bannit automatiquement les IPs après plusieurs échecs de connexion</li>
+<li><strong>nftables</strong> :新一代 de iptables, plus simple et performant</li>
+<li><strong>WAF (Web Application Firewall)</strong> : filtrage applicatif pour protéger les sites web</li>
+<li><strong>Suricata / Snort</strong> : systèmes de détection d'intrusion (IDS)</li>
 </ul>
 
 </div>
 <nav>
 
-<a href="30-alias-raccourcis.html" style="color:#00d9ff;text-decoration:none;">&larr; 30 - Alias et raccourcis personnalises</a> | <a href="32-firewall-iptables-firewalld.html" style="color:#00d9ff;text-decoration:none;">32 - Firewall et filtrage réseau &rarr;</a>
+<a href="31-gestion-paquets.html" style="color:#00d9ff;text-decoration:none;">&larr; 31 - Gestion des paquets</a>
 
 </nav>
 
