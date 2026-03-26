@@ -452,4 +452,4 @@ Conky supporte les scripts Lua pour dessiner des graphiques circulaires, jauges,
 
 Conky est un outil puissant mais qui peut sembler intimidant au début. Le secret : commence simple, puis ajoute les variables une par une. Un bon fichier de config bien commenté vaut mieux qu'un fichier complexe et mystérieux.
 
-${goto 10}${voffset -10}${color1}Leçon créée avec ❤️ pour SkyLinux${color}
+*Leçon créée avec ❤️ pour SkyLinux*
