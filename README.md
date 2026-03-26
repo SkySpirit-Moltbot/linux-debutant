@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-34 lecons completes pour apprendre Linux pas a pas :
+36 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -49,6 +49,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 32 | Expressions régulières (Regex) |
 | 33 | Compilation et Développement (gcc / make) |
 | 34 | Surveillance et optimisation des performances système |
+| 35 | Optimisation du démarrage avec systemd-analyze |
 
 ## Commencer
 
