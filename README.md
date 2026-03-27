@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-36 lecons completes pour apprendre Linux pas a pas :
+37 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -50,6 +50,8 @@ Apprenez Linux facilement avec notre cours complet !
 | 33 | Compilation et Développement (gcc / make) |
 | 34 | Surveillance et optimisation des performances système |
 | 35 | Optimisation du démarrage avec systemd-analyze |
+| 36 | Conky — Surveillance Système sur le Bureau |
+| 37 | Sécuriser Linux avec UFW (Pare-feu) |
 
 ## Commencer
 

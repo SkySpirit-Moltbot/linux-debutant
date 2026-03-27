@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 37 : Sécuriser Linux avec UFW (Pare-feu) - SkyLinux</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/37-ufw-pare-feu.html">
+<meta property="og:title" content="Leçon 37 : Sécuriser Linux avec UFW (Pare-feu) - SkyLinux">
+<meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
+<meta name="description" content="Leçon 37 : Sécuriser Linux avec UFW (Pare-feu) - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, Leçon 37 : Sécuriser Linux avec UFW (Pare-feu), debutant, ubuntu">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+h1 { font-size: 1.8rem; background: linear-gradient(135deg, #00d9ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+h2 { color: #00d9ff; margin: 20px 0 10px; }
+p { line-height: 1.7; margin: 10px 0; color: #bbb; }
+code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+pre { background: rgba(0,217,255,0.05); border: 1px solid rgba(0,217,255,0.2); border-radius: 8px; padding: 15px; overflow-x: auto; margin: 15px 0; position: relative; }
+pre code { background: none; padding: 0; font-size: 0.9rem; color: #e0e0e0; }
+.copy-btn { position: absolute; top: 8px; right: 8px; background: rgba(0,217,255,0.2); border: none; color: #00d9ff; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+.copy-btn:hover { background: rgba(0,217,255,0.4); }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(0,217,255,0.2); }
+th { color: #a855f7; font-weight: 600; }
+tr:hover { background: rgba(0,217,255,0.05); }
+.nav { display: flex; justify-content: space-between; margin: 40px 0; padding-top: 20px; border-top: 1px solid rgba(0,217,255,0.2); }
+.nav a { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: background 0.2s; }
+.nav a:hover { background: rgba(0,217,255,0.3); }
+.nav a.disabled { opacity: 0.3; pointer-events: none; }
+.warning { background: rgba(255,165,0,0.1); border: 1px solid rgba(255,165,0,0.3); border-radius: 8px; padding: 12px 15px; margin: 15px 0; color: #ffa500; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Leçon 37 : Sécuriser Linux avec UFW (Pare-feu)</h1>
+
+<p>Dans cette leçon, tu vas découvrir comment protéger ton système Linux avec <strong>UFW</strong> (<em>Uncomplicated Firewall</em>), un outil simple et efficace pour gérer le pare-feu intégré au noyau Linux (iptables/nftables).</p>
+
+<h2>1. Qu'est-ce qu'un pare-feu ?</h2>
+
+<p>Un <strong>pare-feu</strong> (firewall) est un filtrage qui décide quelles connexions réseau sont autorisées ou bloquées. Sans lui, n'importe qui peut se connecter à ton ordinateur. Avec lui, tu contrôle le trafic :</p>
+
+<ul>
+<li><strong>Entrant</strong> (IN) : connexions vers ta machine (serveur web, SSH...)</li>
+<li><strong>Sortant</strong> (OUT) : connexions depuis ta machine (navigation, mises à jour...)</li>
+</ul>
+
+<p>Linux intègre un pare-feu puissant dans le noyau : <strong>iptables</strong> (ou <strong>nftables</strong>). Mais leurs commandes sont complexes. <strong>UFW</strong> simplifie ce processus.</p>
+
+<h2>2. Installer UFW</h2>
+
+<p>UFW est généralement <strong>préinstallé</strong> sur Ubuntu. Pour les autres distributions :</p>
+
+<pre><code># Debian / Ubuntu / Linux Mint
+sudo apt install ufw
+
+# Fedora
+sudo dnf install ufw
+
+# Vérifier le statut
+sudo ufw status
+</code></pre>
+
+<h2>3. Règles de base</h2>
+
+<h3>Voir le statut</h3>
+
+<pre><code># Statut actuel (actif/inactif, règles en place)
+sudo ufw status verbose
+</code></pre>
+
+<h3>Activer / Désactiver le pare-feu</h3>
+
+<pre><code># Activer UFW (appliquera les règles définies)
+sudo ufw enable
+
+# Désactiver UFW (tout ouvert)
+sudo ufw disable
+</code></pre>
+
+<div class="warning">⚠️ <strong>Attention</strong> : si tu te connectes en SSH et que le pare-feu est inactif, ajoute d'abord une règle SSH AVANT d'activer UFW !</div>
+
+<h2>4. Autoriser ou Bloquer des Ports</h2>
+
+<h3>Autoriser un port (entrant)</h3>
+
+<pre><code># Autoriser le port 80 (HTTP)
+sudo ufw allow 80/tcp
+
+# Autoriser le port 443 (HTTPS)
+sudo ufw allow 443/tcp
+
+# Autoriser un service par son nom
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+</code></pre>
+
+<h3>Bloquer un port (entrant)</h3>
+
+<pre><code># Bloquer le port 23 (Telnet — non sécurisé)
+sudo ufw deny 23/tcp
+
+# Bloquer tout le trafic entrant (très restrictif)
+sudo ufw default deny incoming
+</code></pre>
+
+<h3>Autoriser depuis une IP ou un réseau</h3>
+
+<pre><code># Autoriser une IP spécifique
+sudo ufw allow from 192.168.1.100
+
+# Autoriser un réseau entier
+sudo ufw allow from 192.168.1.0/24
+
+# Autoriser SSH uniquement depuis le réseau local
+sudo ufw allow from 192.168.1.0/24 to any port 22
+</code></pre>
+
+<h2>5. Supprimer une règle</h2>
+
+<pre><code># Voir les règles avec leurs numéros
+sudo ufw status numbered
+
+# Supprimer la règle n°3
+sudo ufw delete 3
+
+# Supprimer une règle par sa définition
+sudo ufw delete allow 80/tcp
+</code></pre>
+
+<h2>6. Logging (journalisation)</h2>
+
+<pre><code># Niveau basique
+sudo ufw logging low
+
+# Niveau moyen (recommandé)
+sudo ufw logging medium
+
+# Désactiver les logs
+sudo ufw logging off
+
+# Lire les logs
+sudo tail -f /var/log/ufw.log
+</code></pre>
+
+<h2>7. Configuration pour un serveur SSH</h2>
+
+<p>C'est le cas le plus courant — on veut sécuriser l'accès SSH :</p>
+
+<pre><code># 1. Autoriser SSH (port 22)
+sudo ufw allow ssh
+
+# Ou explicitement :
+sudo ufw allow 22/tcp
+
+# 2. Si tu te connectes depuis une IP fixe, encore mieux :
+sudo ufw allow from 192.168.1.50 to any port 22
+
+# 3. Tout le reste en entrée : refuser
+sudo ufw default deny incoming
+
+# 4. Sortie : tout autorisé (par défaut)
+sudo ufw default allow outgoing
+
+# 5. Activer le pare-feu
+sudo ufw enable
+</code></pre>
+
+<h2>8. Réinitialiser UFW</h2>
+
+<pre><code># Remettre à zéro (efface toutes les règles)
+sudo ufw reset
+</code></pre>
+
+<h2>Exercice pratique</h2>
+
+<p><strong>Objectif :</strong> Configure UFW sur ta machine pour un usage bureautique sécurisé.</p>
+
+<ol>
+<li>Installe UFW si pas déjà présent</li>
+<li>Affiche le statut actuel (<code>sudo ufw status verbose</code>)</li>
+<li>Configure ces règles dans l'ordre :
+<ul>
+<li><code>sudo ufw default deny incoming</code> (tout refuser par défaut)</li>
+<li><code>sudo ufw allow out 53/udp</code> (DNS sortant)</li>
+<li><code>sudo ufw allow out 80/tcp</code> (HTTP sortant)</li>
+<li><code>sudo ufw allow out 443/tcp</code> (HTTPS sortant)</li>
+<li><code>sudo ufw allow ssh</code> (si tu te connectes en SSH)</li>
+<li><code>sudo ufw allow 22/tcp</code> (si pas encore fait)</li>
+</ul>
+</li>
+<li>Active UFW : <code>sudo ufw enable</code></li>
+<li>Vérifie : <code>sudo ufw status numbered</code></li>
+<li>Teste la navigation web (elle doit fonctionner)</li>
+<li>Lis les logs : <code>sudo tail -5 /var/log/ufw.log</code></li>
+</ol>
+
+<h2>Résumé</h2>
+
+<table>
+<tr><th>Commande</th><th>Rôle</th></tr>
+<tr><td><code>sudo ufw status</code></td><td>Voir l'état du pare-feu</td></tr>
+<tr><td><code>sudo ufw enable</code></td><td>Activer UFW</td></tr>
+<tr><td><code>sudo ufw disable</code></td><td>Désactiver UFW</td></tr>
+<tr><td><code>sudo ufw allow &lt;port&gt;</code></td><td>Autoriser un port</td></tr>
+<tr><td><code>sudo ufw deny &lt;port&gt;</code></td><td>Bloquer un port</td></tr>
+<tr><td><code>sudo ufw delete &lt;règle&gt;</code></td><td>Supprimer une règle</td></tr>
+<tr><td><code>sudo ufw status numbered</code></td><td>Lister les règles avec numéros</td></tr>
+<tr><td><code>sudo ufw reset</code></td><td>Réinitialiser UFW</td></tr>
+</table>
+
+<p>UFW permet de sécuriser ta machine en quelques commandes. Pour un serveur, pense toujours à autoriser <strong>SSH en premier</strong> avant d'activer le pare-feu.</p>
+
+<div class="nav">
+<a href="36-conky-surveillance-systeme.html">← Leçon 36</a>
+<a href="#" class="disabled">Leçon 38 (à venir)</a>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('pre').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copier';
+  btn.onclick = () => {
+    const code = pre.querySelector('code');
+    const text = code ? code.innerText : pre.innerText;
+    navigator.clipboard.writeText(text);
+    btn.textContent = 'Copié !';
+    setTimeout(() => btn.textContent = 'Copier', 2000);
+  };
+  pre.style.position = 'relative';
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>
