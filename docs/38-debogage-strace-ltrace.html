@@ -177,8 +177,8 @@ strcpy(0x55..., "/home/david")                                = 0x55...</p>
 <h2>5. Cas pratiques de débogage</h2>
 <h3>Cas 1 : Un programme dit "Fichier non trouvé"</h3>
 <p>strace -e openat ./mon_programme 2&gt;&amp;1 | grep ENOENT</p>
-<h1>Ou chercher "No such file"</h1>
-<p>strace -e openat ./mon_programme 2&gt;&amp;1 | grep -i "no such"
+<h1>Ou chercher "Fichier introuvable"</h1>
+<p>strace -e openat ./mon_programme 2&gt;&amp;1 | grep -i "Aucun fichier"
 Tu verras exactement quel fichier le programme essaie d'ouvrir.</p>
 <h3>Cas 2 : Un programme plante au démarrage</h3>
 <p>strace -e trace=open,execve ./programme_fantome 2&gt;&amp;1 | grep -E "ENOENT|EACCES|ERR"</p>
@@ -382,7 +382,7 @@ Tu verras exactement quel fichier le programme essaie d'ouvrir.</p>
 </div>
 <nav>
 
-<a href="37-ufw-pare-feu.html" style="color:#00d9ff;text-decoration:none;">&larr; 37 - Sécuriser Linux avec UFW</a> | <span style="color:#666;">38</span> | <a href="39-gestion-volumes-lvm.html" style="color:#00d9ff;text-decoration:none;">39 - LVM - Gestion des Volumes Logiques &rarr;</a>
+<a href="37-scuriser-linux-avec-ufw.html" style="color:#00d9ff;text-decoration:none;">&larr; 37 - Sécuriser Linux avec UFW</a> | <span style="color:#666;">38</span> | <a href="39-lvm-gestion-des-volumes-logiques.html" style="color:#00d9ff;text-decoration:none;">39 - LVM - Gestion des Volumes Logiques &rarr;</a>
 
 </nav>
 

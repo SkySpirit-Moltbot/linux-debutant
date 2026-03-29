@@ -78,8 +78,8 @@ ltrace -i ls /tmp
 ## 5. Cas pratiques de débogage
 ### Cas 1 : Un programme dit "Fichier non trouvé"
 strace -e openat ./mon_programme 2>&1 | grep ENOENT
-# Ou chercher "No such file"
-strace -e openat ./mon_programme 2>&1 | grep -i "no such"
+# Ou chercher "Fichier introuvable"
+strace -e openat ./mon_programme 2>&1 | grep -i "Aucun fichier"
 Tu verras exactement quel fichier le programme essaie d'ouvrir.
 ### Cas 2 : Un programme plante au démarrage
 strace -e trace=open,execve ./programme_fantome 2>&1 | grep -E "ENOENT|EACCES|ERR"
