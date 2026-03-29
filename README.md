@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-38 lecons completes pour apprendre Linux pas a pas :
+39 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -53,6 +53,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 36 | Conky — Surveillance Système sur le Bureau |
 | 37 | Sécuriser Linux avec UFW (Pare-feu) |
 | 38 | Débogage avec Strace et Ltrace |
+| 39 | LVM - Gestion des Volumes Logiques |
 
 ## Commencer
 
