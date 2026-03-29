@@ -54,6 +54,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 37 | Sécuriser Linux avec UFW (Pare-feu) |
 | 38 | Débogage avec Strace et Ltrace |
 | 39 | LVM - Gestion des Volumes Logiques |
+| 40 | Git - Gestion de Versions |
 
 ## Commencer
 
