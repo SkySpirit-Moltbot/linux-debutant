@@ -55,6 +55,8 @@ Apprenez Linux facilement avec notre cours complet !
 | 38 | Débogage avec Strace et Ltrace |
 | 39 | LVM - Gestion des Volumes Logiques |
 | 40 | Git - Gestion de Versions |
+| 41 | Les minuteurs systemd (timers) |
+| 41 | Les minuteurs systemd (timers) |
 
 ## Commencer
 
