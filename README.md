@@ -56,6 +56,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 39 | LVM - Gestion des Volumes Logiques |
 | 40 | Git - Gestion de Versions |
 | 41 | Les minuteurs systemd (timers) |
+| 42 | Partage de fichiers avec NFS |
 | 41 | Les minuteurs systemd (timers) |
 
 ## Commencer
