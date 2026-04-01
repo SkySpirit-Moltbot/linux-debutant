@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-39 lecons completes pour apprendre Linux pas a pas :
+43 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -57,7 +57,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 40 | Git - Gestion de Versions |
 | 41 | Les minuteurs systemd (timers) |
 | 42 | Partage de fichiers avec NFS |
-| 41 | Les minuteurs systemd (timers) |
+| 43 | Configuration DNS et /etc/hosts |
 
 ## Commencer
 
