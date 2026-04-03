@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 45 : Planification de tâches avec at et batch - SkyLinux</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://skyspirit-moltbot.github.io/skylinux/45-planification-taches-at-batch.html">
+<meta property="og:title" content="Leçon 45 : Planification de tâches avec at et batch - SkyLinux">
+<meta property="og:description" content="Apprenez Linux facilement avec SkyLinux">
+<meta name="description" content="Leçon 45 : Planification de tâches avec at et batch - Apprenez Linux facilement avec SkyLinux - Le guide pour tous.">
+<meta name="keywords" content="linux, cours, Leçon 45 at batch planification tâches, debutant, ubuntu, at, batch, cron, planification">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Inter", sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+h1 { font-size: 1.8rem; background: linear-gradient(135deg, #00d9ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+h2 { color: #00d9ff; margin: 20px 0 10px; }
+h3 { color: #a855f7; margin: 15px 0 8px; }
+p { line-height: 1.7; margin: 10px 0; color: #bbb; }
+code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+th, td { border: 1px solid #333; padding: 8px; }
+th { background: rgba(0,217,255,0.1); }
+blockquote { border-left: 3px solid #a855f7; padding: 10px 15px; margin: 15px 0; background: rgba(168,85,247,0.1); border-radius: 0 8px 8px 0; }
+blockquote p { color: #ddd; margin: 5px 0; }
+li { line-height: 1.8; color: #bbb; margin-left: 20px; }
+li code { background: rgba(0,217,255,0.1); color: #00d9ff; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+nav { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+a { color: #00d9ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+hr { border: none; border-top: 1px solid #333; margin: 20px 0; }
+ul, ol { padding-left: 25px; margin: 10px 0; }
+strong { color: #e0e0e0; }
+.code-block {
+  background: #111118;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 15px 0;
+  border: 1px solid #30363d;
+}
+.code-block .code-header {
+  background: #1c1c24;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: #888;
+  border-bottom: 1px solid #30363d;
+}
+.code-block pre { padding: 15px; overflow-x: auto; font-size: 0.9rem; }
+.code-block pre code { background: none; padding: 0; color: #e0e0e0; }
+.exercise {
+  background: rgba(0,217,255,0.05);
+  border: 1px solid rgba(0,217,255,0.2);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.exercise h3 { color: #00d9ff; margin-top: 0; }
+.tip {
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 15px 0;
+}
+.tip strong { color: #a855f7; }
+.warning {
+  background: rgba(255,200,0,0.05);
+  border: 1px solid rgba(255,200,0,0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 15px 0;
+}
+.warning strong { color: #ffc800; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>📋 Leçon 45 : Planification de tâches avec at et batch</h1>
+
+<p>Dans la <a href="13-taches-planifiees-cron.html">leçon sur Cron</a>, tu as appris à planifier des tâches répétitives. Mais parfois, tu veux exécuter une commande <strong>une seule fois</strong>, à un moment précis — sans t'embêter à configurer une tâche Cron. C'est exactement ce que <code>at</code> fait.</p>
+
+<p>Cette leçon te montre aussi <code>batch</code>, qui permet de lancer des commandes quand la charge du système est faible.</p>
+
+<h2>1. Qu'est-ce que `at` ?</h2>
+
+<p><code>at</code> planifie l'exécution d'une commande à un moment donné. Une fois exécutée, c'est fini — pas de répétition. C'est l'équivalent d'un "rendez-vous unique" pour ton terminal.</p>
+
+<h2>2. Installer et activer le service</h2>
+
+<p>Sur la plupart des systèmes, <code>at</code> n'est pas installé par défaut. Vérifie d'abord :</p>
+
+<div class="code-block">
+<div class="code-header"># Vérifier si at est installé</div>
+<pre><code>which at
+at --version</code></pre>
+</div>
+
+<p>Si la commande n'existe pas, installe-la :</p>
+
+<div class="code-block">
+<div class="code-header"># Installer at (Debian/Ubuntu)</div>
+<pre><code>sudo apt update && sudo apt install at</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Installer at (Fedora/RHEL)</div>
+<pre><code>sudo dnf install at</code></pre>
+</div>
+
+<p>Ensuite, démarre et active le service :</p>
+
+<div class="code-block">
+<div class="code-header"># Démarrer et activer le service at</div>
+<pre><code>sudo systemctl start atd
+sudo systemctl enable atd</code></pre>
+</div>
+
+<h2>3. Utiliser `at` — Les bases</h2>
+
+<h3>3.1 Spécifier l'heure</h3>
+
+<p><code>at</code> comprend le langage naturel. Voici des exemples :</p>
+
+<div class="code-block">
+<div class="code-header"># Exécuter à 14h30 aujourd'hui</div>
+<pre><code>echo "echo 'Coucou depuis at!' >> ~/test-at.txt" | at 14:30</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Exécuter à 16h00 demain</div>
+<pre><code>echo "df -h > ~/disks.txt" | at 16:00 tomorrow</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Exécuter dans 2 heures</div>
+<pre><code>echo "systemctl status nginx" | at now + 2 hours</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Exécuter à une date précise</div>
+<pre><code>echo "backup.sh" | at 09:00 15.04.2026</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># midnight (minuit), noon (midi), teatime (16h)</div>
+<pre><code>echo "cleanup.sh" | at midnight
+echo "rapport.sh" | at teatime</code></pre>
+</div>
+
+<h3>3.2 Mode interactif</h3>
+
+<p>Tu peux aussi entrer dans un shell interactif avec <code>at</code> :</p>
+
+<div class="code-block">
+<div class="code-header"># Ouvrir un shell at pour saisir plusieurs commandes</div>
+<pre><code>at 17:00
+# Tu vois l'invite "at>", tape tes commandes :
+echo "=== Rapport du jour ===" > ~/rapport.txt
+uptime >> ~/rapport.txt
+free -h >> ~/rapport.txt
+# Tape Ctrl+D pour valider</code></pre>
+</div>
+
+<blockquote>
+<p><strong>💡 Bonne habitude :</strong> Utilise toujours le chemin absolu des fichiers dans tes commandes <code>at</code>. Le job s'exécute dans un environnement minimal, sans les variables d'environnement de ta session.</p>
+</blockquote>
+
+<h2>4. Lister et gérer ses jobs</h2>
+
+<h3>4.1 Voir les jobs en attente</h3>
+
+<div class="code-block">
+<div class="code-header"># Lister les jobs at en attente</div>
+<pre><code>atq</code></pre>
+</div>
+
+<p>La sortie affiche le numéro du job, la date, l'heure et la file d'attente.</p>
+
+<h3>4.2 Détails d'un job</h3>
+
+<div class="code-block">
+<div class="code-header"># Voir le contenu d'un job spécifique</div>
+<pre><code>at -c 5</code></pre>
+</div>
+
+<h3>4.3 Supprimer un job</h3>
+
+<div class="code-block">
+<div class="code-header"># Supprimer un job avant son exécution</div>
+<pre><code>atrm 5</code></pre>
+</div>
+
+<h2>5. Les files d'attente (queues)</h2>
+
+<p><code>at</code> utilise des files d'attente nommées avec des lettres :</p>
+
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr><td><code>a</code> (défaut)</td><td>Jobs submités avec <code>at</code></td></tr>
+<tr><td><code>b</code></td><td>Jobs submités avec <code>batch</code></td></tr>
+<tr><td><code>c</code> à <code}z</code></td><td>Files supplémentaires</td></tr>
+</table>
+
+<div class="code-block">
+<div class="code-header"># Soumettre un job dans la queue b</div>
+<pre><code>at -q b 10:00 tomorrow</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Limiter les ressources d'une queue (exemple)</div>
+<pre><code>at -q b -m 10:00 tomorrow</code></pre>
+</div>
+
+<h2>6. `batch` — Exécuter quand le système est calme</h2>
+
+<p><code>batch</code> est similaire à <code>at</code>, sauf que les commandes ne s'exécutent que lorsque la charge système descend sous un seuil (par défaut : 1.5, ou le nombre de cœurs). C'est parfait pour des tâches lourdes mais pas urgentes.</p>
+
+<div class="code-block">
+<div class="code-header"># Exécuter la commande quand la charge < 1.5</div>
+<pre><code>echo "/opt/rapport-quotidien.sh" | batch</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Mode interactif avec batch</div>
+<pre><code>batch
+# Tape tes commandes, puis Ctrl+D
+find /home -name "*.tmp" -delete
+tar czf /backup/home.tar.gz /home
+# Ctrl+D</code></pre>
+</div>
+
+<blockquote>
+<p><strong>⏱️ Patience :</strong> Avec <code>batch</code>, ton job attend en queue. Dès que le système est suffisamment calme, il s'exécute automatiquement.</p>
+</blockquote>
+
+<h2>7. Exemple concret : Planifier un redémarrage différé</h2>
+
+<div class="code-block">
+<div class="code-header"># Planifier un redémarrage dans 30 minutes (avec confirmation)</div>
+<pre><code>echo "sudo shutdown -r +30" | at now + 30 minutes</code></pre>
+</div>
+
+<div class="code-block">
+<div class="code-header"># Annuler le redémarrage planifié</div>
+<pre><code>sudo shutdown -c</code></pre>
+</div>
+
+<h2>8. Comparaison : `at` vs `cron` vs `batch`</h2>
+
+<table>
+<tr><th>Caractéristique</th><th><code>at</code></th><th><code>cron</code></th><th><code>batch</code></th></tr>
+<tr><td>Usage principal</td><td>Exécution unique</td><td>Exécution répétitive</td><td>Tâche si système calme</td></tr>
+<tr><td>Répétition</td><td>Non</td><td>Oui (via crontab)</td><td>Non</td></tr>
+<tr><td>Condition de charge</td><td>Non</td><td>Non</td><td>Oui</td></tr>
+<tr><td>Persistance après reboot</td><td>Non</td><td>Oui</td><td>Non</td></tr>
+<tr><td>Difficulté</td><td>Facile</td><td>Moyenne</td><td>Facile</td></tr>
+</table>
+
+<h2>9. Exercices pratiques</h2>
+
+<div class="exercise">
+<h3>🎯 Exercice 1 : Premier job `at`</h3>
+<p>1. Vérifie que le service <code>atd</code> est actif : <code>systemctl status atd</code></p>
+<p>2. Planifie un job qui écrit la date dans un fichier :</p>
+<pre><code>echo "date >> ~/mon-at.txt" | at now + 1 minute</code></pre>
+<p>3. Attends une minute, puis vérifie : <code>cat ~/mon-at.txt</code></p>
+<p>4. Liste tes jobs en attente : <code>atq</code></p>
+</div>
+
+<div class="exercise">
+<h3>🎯 Exercice 2 : Comparer `at` et `batch`</h3>
+<p>1. Lance <code>atq</code> pour voir les jobs en attente.</p>
+<p>2. Soumets une commande avec <code>batch</code> : <code>echo "uptime > ~/batch-test.txt" | batch</code></p>
+<p>3. Observe la différence dans <code>atq</code> (les jobs batch apparaissent dans la queue <code>b</code>).</p>
+</div>
+
+<div class="exercise">
+<h3>🎯 Exercice 3 : Automation utile</h3>
+<p>1. Crée un petit script <code>~/rapport.sh</code> :</p>
+<pre><code>#!/bin/bash
+echo "=== Rapport du $(date) ===" > ~/rapport.txt
+echo "Uptime :" >> ~/rapport.txt
+uptime >> ~/rapport.txt
+echo "Disque :" >> ~/rapport.txt
+df -h >> ~/rapport.txt
+</code></pre>
+<p>2. Rend-le exécutable : <code>chmod +x ~/rapport.sh</code></p>
+<p>3. Planifie-le pour demain à 8h : <code>echo "~/rapport.sh" | at 08:00 tomorrow</code></p>
+<p>4. Vérifie avec <code>atq</code> qu'il est bien dans la liste.</p>
+</div>
+
+<h2>10. Résumé</h2>
+
+<ul>
+<li><strong><code>at</code></strong> : planifie l'exécution d'une commande <strong>une seule fois</strong> à un moment précis.</li>
+<li><strong><code>batch</code></strong> : exécute les commandes quand la <strong>charge système</strong> est faible.</li>
+<li><strong><code>atq</code></strong> : liste les jobs en attente.</li>
+<li><strong><code>atrm</code></strong> : supprime un job avant son exécution.</li>
+<li>Le service <code>atd</code> doit être actif pour que <code>at</code> et <code>batch</code> fonctionnent.</li>
+<li>Utilise des <strong>chemins absolus</strong> dans les jobs pour éviter les surprises.</li>
+</ul>
+
+<blockquote>
+<p><strong>🔗 Pour aller plus loin :</strong> La leçon sur <a href="13-taches-planifiees-cron.html">Cron et les tâches planifiées</a> te montre comment répéter des tâches automatiquement.</p>
+</blockquote>
+
+<nav>
+<a href="44-ssh-tunnels-port-forwarding.html">← Leçon 44 : SSH Tunnels</a>
+<a href="index.html">↑ Accueil</a>
+<span style="color:#333;">Leçon 46 : à venir →</span>
+</nav>
+
+</div>
+</body>
+</html>
