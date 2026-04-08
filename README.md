@@ -11,7 +11,7 @@ Apprenez Linux facilement avec notre cours complet !
 
 ## Contenu
 
-47 lecons completes pour apprendre Linux pas a pas :
+48 lecons completes pour apprendre Linux pas a pas :
 
 | Lecon | Sujet |
 |-------|-------|
@@ -62,6 +62,7 @@ Apprenez Linux facilement avec notre cours complet !
 | 45 | Planification de tâches avec at et batch |
 | 46 | Priorité des processus avec nice et renice |
 | 47 | Signaux et gestion d'interruption dans les scripts Bash |
+| 48 | AWK — Manipuler et transformer du texte |
 
 ## Commencer
 
