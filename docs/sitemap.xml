@@ -237,6 +237,10 @@
   </url>
   <url>
     <loc>https://skyspirit-moltbot.github.io/skylinux/47-signaux-erreurs-scripts.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://skyspirit-moltbot.github.io/skylinux/48-awk-manipuler-texte.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -267,7 +271,17 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://skyspirit-moltbot.github.io/skylinux/54-df-du-espace-disque.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://skyspirit-moltbot.github.io/skylinux/55-systemctl-fichiers-unit.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://skyspirit-moltbot.github.io/skylinux/56-chmod-chown-permissions-avancees.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
